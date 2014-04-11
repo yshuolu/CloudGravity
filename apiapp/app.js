@@ -49,11 +49,6 @@ fs.readdirSync(modelsPath).forEach(function(file){
 	if ( ~file.indexOf('.js') ) require(modelsPath + file);
 });
 
-//test
-require('./models/user');
-require('./models/app');
-//test
-
 /**
  * Config the app
  */
