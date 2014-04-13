@@ -1,7 +1,7 @@
 var express = require('express'),
 	path = require('path'),
-	auth = require('../middlewares/auth'),
-	apiStat = require('../middlewares/apistat');
+	gate = require('../middlewares/gate');
+	//apiStat = require('../middlewares/apistat');
 
 module.exports = function(app, config){
 	// all environments
@@ -10,8 +10,8 @@ module.exports = function(app, config){
 	app.use(express.static(path.join(__dirname, 'public')));
 
 	//
-	app.use(auth.appAuth());
-	app.use(apiStat.stat());
+	app.use(gate.appAuth());
+	app.use(gate.statistics());
 
 	// development only
 	app.configure('development', function(){

@@ -65,5 +65,5 @@ require('./config/boot')(app);
  */
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+	console.log('ENV: ' + app.get('env') + '\nExpress server listening on port ' + app.get('port'));
 });
