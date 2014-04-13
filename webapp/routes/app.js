@@ -49,13 +49,24 @@ exports.create = function(req, res){
 }
 
 /**
- * Show app list for this user
+ * Show app list for this user if user logged in, else
+ * show the land page
  */
 
 exports.list = function(req, res){
-	App.list(req.user._id, function(err, apps){
-		res.json(apps);
-	});
+	if (req.user){
+		App.list(req.user._id, function(err, apps){
+			for (app in apps){
+				//
+			}
+
+			res.render('applist', {user: req.user, apps: apps});
+		});
+
+	}else{
+		//user not logged in, show land page
+		res.render('land');
+	}
 }
 
 /**

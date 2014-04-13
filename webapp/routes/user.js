@@ -25,7 +25,7 @@ exports.signup = function(req, res){
 		//user register success
 		req.session.userId = user.id;
 
-		res.send('register success\n');
+		res.redirect('/');
 	});
 }
 
@@ -51,7 +51,7 @@ exports.signin = function(req, res){
 						req.session.cookie.maxAge = maxAge;
 					}
 
-					res.send('login success\n');
+					res.redirect('/');
 				});
 				
 			}else{
@@ -70,6 +70,20 @@ exports.signout = function(req, res){
 		res.send('logout success!\n');
 	});
 }
+
+/**
+ * Show login page if no user session, else redirect to /
+ */
+
+exports.loginPage = function(req, res){
+	if (!req.user){
+		res.render('login');
+	}else{
+		res.redirect('/');
+	}
+}
+
+
 
 
 //test
