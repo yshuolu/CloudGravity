@@ -5,7 +5,7 @@ html
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     title 
-      | 云引力 |
+      | 云引力 | 
       = user.name
 
     link(href='/stylesheets/bootstrap.min.css', rel='stylesheet')
@@ -36,22 +36,26 @@ html
     div.container.applist
       h2.applist-header 应用：
       div.list-group
-        each app, i in apps
-          if i % 4 == 0
-            a.list-group-item.list-group-item-success(href='/app/'+app.name) 
-              = app.name
-          if i % 4 == 1
-            a.list-group-item.list-group-item-info(href='/app/'+app.name) 
-              = app.name
-          if i % 4 == 2
-            a.list-group-item.list-group-item-warning(href='/app/'+app.name) 
-              = app.name
-          if i % 4 == 3
-            a.list-group-item.list-group-item-danger(href='/app/'+app.name) 
-              = app.name
+        if apps.length == 0
+          a.list-group-item.list-group-item-success(href='/createapp') 您还没有任何应用，立刻创建第一个应用
+        else
+          each app, i in apps
+            if i % 4 == 0
+              a.list-group-item.list-group-item-success(href='/app/'+app.name) 
+                = app.name
+            if i % 4 == 1
+              a.list-group-item.list-group-item-info(href='/app/'+app.name) 
+                = app.name
+            if i % 4 == 2
+              a.list-group-item.list-group-item-warning(href='/app/'+app.name) 
+                = app.name
+            if i % 4 == 3
+              a.list-group-item.list-group-item-danger(href='/app/'+app.name) 
+                = app.name
 
     div.container.pricing-summary
-      h2 用户API使用量：1000
+      h2 用户API使用量：
+        = cost
 
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
     script(src='/javascripts/bootstrap.min.js')

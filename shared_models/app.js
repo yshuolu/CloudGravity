@@ -99,15 +99,14 @@ AppSchema.statics = {
 	},
 
 	/**
-	 * List all apps of this user with criteria, and sort it by create date
+	 * List all apps with criteria, and sort it by create date
 	 *
-	 * @param {ObjectId} userId
 	 * @param {Object} criteria
 	 * @param {Function} fn
 	 *
 	 * @api public
 	 */
-	list: function(userId, criteria, fn){
+	list: function(criteria, fn){
 		if (criteria instanceof Function){
 			fn = criteria;
 			criteria = {};

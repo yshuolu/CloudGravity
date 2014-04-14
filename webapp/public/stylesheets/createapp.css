@@ -1,0 +1,31 @@
+body{
+	padding-top: 80px;
+  	padding-bottom: 40px;
+}
+
+.form-create {
+	max-width: 700px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+.form-create textarea {
+	margin-top: 20px;
+	font-size: 15pt;
+}
+
+.form-create input[type='text'] {
+	margin-top: 30px;
+	height: 60px;
+	font-size: 20pt;
+}
+
+.form-create input[type='url'] {
+	margin-top: 20px;
+	height: 60px;
+	font-size: 20pt;
+}
+
+.form-create button[type='submit'] {
+	margin-top: 40px;
+}

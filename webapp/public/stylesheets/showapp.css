@@ -1,0 +1,44 @@
+body{
+	padding-top: 80px;
+  	padding-bottom: 40px;
+}
+
+.form-modify, .form-delete {
+	max-width: 700px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+.input-title {
+	margin-top: 50px;
+	margin-bottom: -10px;
+}
+
+
+.form-modify textarea {
+	margin-top: 0px;
+	font-size: 15pt;
+}
+
+.form-modify input[type='text'] {
+	margin-top: 0px;
+	height: 60px;
+	font-size: 20pt;
+}
+
+.form-modify input[type='url'] {
+	margin-top: 0px;
+	height: 60px;
+	font-size: 20pt;
+}
+
+button.modify, button.delete {
+	margin-top: 40px;
+	width: 200px;
+}
+
+.statistic, .auth-info {
+	max-width: 700px;
+	padding: 15px;
+	margin-top: 40px;
+}

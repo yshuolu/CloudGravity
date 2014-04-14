@@ -67,7 +67,7 @@ exports.signin = function(req, res){
 
 exports.signout = function(req, res){
 	req.session.destroy(function(err){
-		res.send('logout success!\n');
+		res.redirect('/');
 	});
 }
 
@@ -84,9 +84,9 @@ exports.loginPage = function(req, res){
 }
 
 
-
-
-//test
-exports.test = function(req, res){
-	res.send('Hello  ' + req.user.name + '\n');
+/**
+ * Show user profile page
+ */
+exports.profile = function(req, res){
+	res.render('profile', {user: req.user});
 }

@@ -40,8 +40,8 @@ UserSchema
 
 //name length should be at least 6 characters
 UserSchema.path('name').validate(function(name){
-	return ( name.length >= 6 );
-}, 'name length less than 6');
+	return ( name.length >= 1 );
+}, 'name length less than 1');
 
 //email should not be empty
 UserSchema.path('email').validate(function(email){

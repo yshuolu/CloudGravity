@@ -40,6 +40,11 @@ ApiStatSchema.path('updatedAt').required(true, 'updatedAt shoud not be empty');
 
 
 /**
+ * Methods
+ */
+
+
+/**
  * Statics
  */
 
@@ -86,6 +91,22 @@ ApiStatSchema.statics = {
 					});
 				}
 			});
+	},
+
+	/**
+	 * Find all apiStat of an app, and sort it by createdAt
+	 * 
+	 * @param {ObjectId} appId
+	 * @param {Function} fn
+	 *
+	 * @api public
+	 */
+	fetchStatOfApp: function(appId, fn){
+		this
+			.find({app: appId})
+			.populate('app')
+			.sort({'createdAt': -1})
+			.exec(fn);
 	}
 }
 

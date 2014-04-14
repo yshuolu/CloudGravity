@@ -1,0 +1,77 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title 云引力 | 应用信息
+
+    link(href='/stylesheets/bootstrap.min.css', rel='stylesheet')
+    link(href='/stylesheets/nav.css', rel='stylesheet')
+    link(href='/stylesheets/showapp.css', rel='stylesheet')
+  body
+    div.navbar.navbar-default.navbar-fixed-top(role='navigation')
+      div.navbar-header
+        a.navbar-brand(href='/') 云引力
+      ul.nav.navbar-nav
+        li
+          a(href='/docs') 文档
+      ul.nav.navbar-nav.navbar-right
+        li.dropdown.user-dropdown
+          a.dropdown-toggle(href='#', data-toggle='dropdown')
+            = user.name
+            b.caret
+          ul.dropdown-menu
+            li
+              a(href='/profile') 账户管理
+            li.divider
+            li
+              a(href='/signout') 登出
+
+    div.container
+      form.form-modify(role='form', action='/app/'+app.name, method='post')
+        h2.form-modify-heading 应用信息
+        h3.input-title 应用名称:
+        br
+        input.form-control(type='text', name='name', required, value=app.name)
+        h3.input-title 应用描述:
+        br
+        textarea.form-control('rows'=6, name='description')
+          = app.description
+        h3.input-title URL:
+        br
+        input.form-control(type='url', name='url', value=app.url)
+        button.btn.btn-warning.btn-block.pull-right.modify(type='submit') 保存修改
+
+    div.container
+      form.form-delete(action='/app/'+app.name, method='post')
+        input.hidden(type='checkbox', name='del', checked)
+        button.btn.btn-danger.btn-block.pull-right.delete(type='submit') 删除应用
+
+    div.container.auth-info
+      h2 访问鉴权（保护access_key安全）
+      br
+      h4
+        span access_id: 
+        = app.accessId
+      h4
+        span access_key: 
+        = app.accessKey
+
+
+    div.container.statistic
+      h2 API访问统计
+      table.table
+        if stats.length == 0
+          a.list-group-item 无任何API访问
+        else
+          tr
+            th API
+            th 访问次数
+          each stat in stats
+            tr
+              td= stat.api
+              td= stat.count             
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
+    script(src='/javascripts/bootstrap.min.js')

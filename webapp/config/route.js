@@ -20,11 +20,11 @@ module.exports = function(app){
 	app.post('/signin', user.signin);
 	app.post('/signup', user.signup);
 	app.get('/signout', user.signout);
-	//app.get('/', auth.userRequired(), user.test);
+	app.get('/profile', auth.userRequired(), user.profile);
 
 	//User app
 	app.param('id', appController.loadApp());
-	//app.get('/app', auth.userRequired(), appController.list);
+	app.get('/createapp', auth.userRequired(), appController.createPage);
 	app.post('/app/new', auth.userRequired(), appController.create);
 	app.get('/app/:id', auth.userRequired(), appController.show);
 	app.put('/app/:id', auth.userRequired(), appController.modify);

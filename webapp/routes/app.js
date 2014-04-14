@@ -4,6 +4,7 @@
 
 var mongoose = require('mongoose'),
 	App = mongoose.model('App'),
+	ApiStat = mongoose.model('ApiStat');
 	extend = require('util')._extend;
 
 
@@ -17,7 +18,7 @@ exports.loadApp = function(){
 		App.findByName(req.user._id, id, function(err, app){
 			if (!err && app){
 				//fetch the app object
-				req.app = app;
+				req.userApp = app;
 				next();
 			}else{
 				//error
@@ -44,7 +45,7 @@ exports.create = function(req, res){
 			return res.send('create app failed!\n');
 		}
 
-		res.json(app);
+		res.redirect('/');
 	});
 }
 
@@ -55,12 +56,35 @@ exports.create = function(req, res){
 
 exports.list = function(req, res){
 	if (req.user){
-		App.list(req.user._id, function(err, apps){
+		App.list({user: req.user._id}, function(err, apps){
+			//no app created, render the page directly
+			if (apps.length == 0) return res.render('applist', {user: req.user, apps: [], cost: 0});
+
+			//has app list
+			//count all api cost
+			var resid = apps.length;
+			var totalApiCount = 0;
+
 			for (app in apps){
 				//
+				ApiStat
+					.find({app: app._id})
+					.exec(function(err, stats){
+						if (err) return res.send('error');
+
+						//increment total api count
+						stats.forEach(function(stat){ totalApiCount += stat.count;});
+
+						//decrese resid
+						resid--;
+
+						//check end point
+						if (resid == 0){
+							res.render('applist', {user: req.user, apps: apps, cost: totalApiCount});
+						}
+					});
 			}
 
-			res.render('applist', {user: req.user, apps: apps});
 		});
 
 	}else{
@@ -74,7 +98,9 @@ exports.list = function(req, res){
  */
 
 exports.show = function(req, res){
-	res.json(req.app);
+	ApiStat.fetchStatOfApp(req.userApp._id, function(err, stats){
+		res.render('showapp', {user: req.user, app: req.userApp, stats: stats});
+	});
 }
 
 /**
@@ -82,12 +108,12 @@ exports.show = function(req, res){
  */
 
 exports.modify = function(req, res){
-	var modifiedApp = extend(req.app, sanitize(req.body));
+	var modifiedApp = extend(req.userApp, sanitize(req.body));
 
 	modifiedApp.save(function(err, app){
 		if (!err){
 			//save success
-			res.json(app);
+			res.redirect('/app/'+app.name);
 		}else{
 
 			res.send('modify app failed!\n');
@@ -101,16 +127,25 @@ exports.modify = function(req, res){
  */
 
 exports.delete = function(req, res){
-	req.app.remove(function(err){
+	req.userApp.remove(function(err){
 		if (!err){
 			//remove success
-			res.redirect('/app');
+			res.redirect('/');
 		}else{
 
 			res.send('remove app failed!\n');
 		}
 	});
 }
+
+/**
+ * Show the creat app page
+ */
+
+exports.createPage = function(req, res){
+	res.render('createapp', {user: req.user});
+}
+
 
 /**
  * Modify or Delete an app.
