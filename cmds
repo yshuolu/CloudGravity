@@ -1,0 +1,5 @@
+mongoimport --db data_platform_dev --collection cell_test --type csv --file ./cell.csv --fields MCC,MNC,LAC,CELL,LAC16,CELL16,LNG,LAT,O_LNG,O_LAT,PRECISION,ADDRESS
+
+db.cell_test.find({CELL16: {$type: 16}}).forEach(function(cell){cell.CELL16 = cell.CELL16.toString(); db.cell_test.save(cell);})
+
+db.cell_test.find({LAC16: {$type: 16}}).forEach(function(cell){cell.LAC16 = cell.LAC16.toString(); db.cell_test.save(cell);})

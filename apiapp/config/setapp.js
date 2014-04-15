@@ -9,7 +9,7 @@ module.exports = function(app, config){
 	app.use(express.logger('dev'));
 	app.use(express.static(path.join(__dirname, 'public')));
 
-	//
+	//gate middleware
 	app.use(gate.appAuth());
 	app.use(gate.statistics());
 
