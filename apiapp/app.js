@@ -6,6 +6,7 @@
 var express = require('express');
 var http = require('http');
 var mongoose = require('mongoose');
+var Memcached = require('memcached')
 var fs = require('fs');
 
 var app = express();
@@ -19,6 +20,7 @@ var env = process.env.NODE_ENV || 'development',
 /**
  * Connect mongodb
  */
+
 var connect = function(){
 	var options = { server: { socketOptions: { keepAlive: 1 } } };
 	mongoose.connect(config.db, options);
@@ -40,6 +42,15 @@ mongoose.connection.on('disconnected', function(){
 mongoose.connection.once('open', function(){
 	console.log('connect mongodb success');
 });
+
+
+/**
+ * Connect memcached.
+ * Bind the memcached client to app object
+ */
+
+app.memcached = new Memcached(config.cacheServer);
+
 
 /**
  * Init all models

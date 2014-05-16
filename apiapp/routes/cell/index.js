@@ -9,7 +9,8 @@ var app = require('../../app'),
 	path = require('path'),
 	base = '/' + path.basename(__dirname), //get last component, aka controller name
 	mongoose = require('mongoose'),
-	Cell = mongoose.model('Cell');
+	Cell = mongoose.model('Cell'),
+	memcached = app.memcached;
 
 /**
  * Set up the routing within this namespace
@@ -49,13 +50,52 @@ function search(req, res){
 		return res.send('parameter error');
 	}
 
-	
-	Cell.findByLacAndCell(req.query.lac, req.query.cell, function(err, cells){
-		if (err) return res.send('internel error');
+	//try to hit the cache first
+	memcached.get(createCacheKey(req), function(err, data){
+		if (err) throw err;
 
-		if (cells.length == 0) return res.send('No result');
+		if (data){
+			//hit cache!!
 
-		res.json(cells);
+			//for debug
+			data[0]['cache'] = 1;
+			
+			res.json(data);
+
+		}else{
+			//did not hit the cache, query database now
+			Cell.findByLacAndCell(req.query.lac, req.query.cell, function(err, cells){
+				if (err) return res.send('internal error');
+
+				if (cells.length == 0) return res.send('No result');
+
+				res.json(cells);
+
+				/**
+				 * After sent the contents, cache them in memcached.
+				 *
+				 * Heads up: the cells include mongoose model objects, but after adding to cache
+				 * it just change to plain object.
+				 * So no more process here.
+				 * Set cache item never expired.
+				 */
+				memcached.set(createCacheKey(req), cells, 0, function(err){
+					//todo:
+					//handle error, not decided how to do it yet...
+				});
+			});
+		}
+
 	});
 	
+}
+
+/**
+ * Compose key in memcached for this service
+ */
+
+function createCacheKey(req){
+	var key = req.path + ' ' + JSON.stringify({lac: req.query.lac, cell: req.query.cell});
+
+	return encodeURIComponent(key);
 }

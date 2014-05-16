@@ -9,6 +9,7 @@
   "dependencies": {
     "express": "3.4.8",
     "mongoose": "3.8.8",
-    "hat": "0.0.3"
+    "hat": "0.0.3",
+    "memcached": "0.2.8"
   }
 }

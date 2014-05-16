@@ -1,7 +1,6 @@
 var express = require('express'),
 	path = require('path'),
 	gate = require('../middlewares/gate');
-	//apiStat = require('../middlewares/apistat');
 
 module.exports = function(app, config){
 	// all environments

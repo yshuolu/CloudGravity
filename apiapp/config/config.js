@@ -4,6 +4,7 @@ module.exports = {
 	 */
 	development: {
 		db: 'mongodb://localhost/data_platform_dev',
-		port: 6666
+		port: 6666,
+		cacheServer: 'localhost:11211'
 	}
 }
