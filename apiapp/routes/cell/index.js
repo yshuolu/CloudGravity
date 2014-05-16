@@ -10,10 +10,14 @@ var app = require('../../app'),
 	base = '/' + path.basename(__dirname), //get last component, aka controller name
 	mongoose = require('mongoose'),
 	Cell = mongoose.model('Cell');
+
 /**
  * Set up the routing within this namespace
  */
 app.get(base, search);
+
+//predefined hex radix
+var HEX_RADIX = 16
 
 
 /**
@@ -31,22 +35,22 @@ function search(req, res){
 		//sanitize, all params should be number
 		req.query.lac = parseInt(req.query.lac);
 		req.query.cell = parseInt(req.query.cell);
-		req.query.hex = false;
 
-		//check if params are number
-		if ( isNaN(req.query.lac) || isNaN(req.query.cell) ) {
-			//param error
-			return res.send('parameter error');
-		}
 	}else{
-		//sanitize, all params should be string
-		req.query.lac = req.query.lac.toString().toUpperCase();
-		req.query.cell = req.query.cell.toString().toUpperCase();
-		req.query.hex = true;
+		//sanitize, all params should be string,
+		//and change the hex string to integer
+		req.query.lac = parseInt(req.query.lac.toString().toUpperCase(), HEX_RADIX);
+		req.query.cell = parseInt(req.query.cell.toString().toUpperCase(), HEX_RADIX);
+	}
+
+	//check if params are number
+	if ( isNaN(req.query.lac) || isNaN(req.query.cell) ) {
+		//param error
+		return res.send('parameter error');
 	}
 
 	
-	Cell.findByLacAndCell(req.query.lac, req.query.cell, req.query.hex, function(err, cells){
+	Cell.findByLacAndCell(req.query.lac, req.query.cell, function(err, cells){
 		if (err) return res.send('internel error');
 
 		if (cells.length == 0) return res.send('No result');

@@ -41,11 +41,11 @@ CellSchema.statics = {
 	 * @api public
 	 */
 
-	findByLacAndCell: function(lac, cell, isHEX, fn){
-		var criteria = isHEX ? {LAC16: lac, CELL16: cell} : {LAC: lac, CELL: cell};
+	findByLacAndCell: function(lac, cell, fn){
+		//var criteria = isHEX ? {LAC16: lac, CELL16: cell} : {LAC: lac, CELL: cell};
 
 		this
-			.find(criteria)
+			.find({LAC: lac, CELL: cell})
 			.exec(fn);
 	}
 }
