@@ -15,10 +15,18 @@ var app = require('../../app'),
 /**
  * Set up the routing within this namespace
  */
+
+//search the cell with LAC and CELL number: /cell
 app.get(base, search);
+
+//search nearest cells with LNG, LAT and Dis: /cell/near
+app.get('/cell/near', searchNearest);
 
 //predefined hex radix
 var HEX_RADIX = 16
+
+//predefine page size
+var PAGE_SIZE = 10;
 
 
 /**
@@ -51,7 +59,7 @@ function search(req, res){
 	}
 
 	//try to hit the cache first
-	memcached.get(createCacheKey(req), function(err, data){
+	memcached.get(cacheKeyForCell(req), function(err, data){
 		if (err) throw err;
 
 		if (data){
@@ -69,6 +77,9 @@ function search(req, res){
 
 				if (cells.length == 0) return res.send('No result');
 
+				//process result, remove the 'loc' field
+				cells.forEach(function(cell){ delete cell.loc; });
+				//output the result
 				res.json(cells);
 
 				/**
@@ -79,7 +90,7 @@ function search(req, res){
 				 * So no more process here.
 				 * Set cache item never expired.
 				 */
-				memcached.set(createCacheKey(req), cells, 0, function(err){
+				memcached.set(cacheKeyForCell(req), cells, 0, function(err){
 					//todo:
 					//handle error, not decided how to do it yet...
 				});
@@ -91,11 +102,91 @@ function search(req, res){
 }
 
 /**
- * Compose key in memcached for this service
+ * Search nearest cells with longitude, latitude and distance
+ *
+ * To do:
+ * Now this method just support search the first 10 nearest cells. We will do paging on results...
  */
 
-function createCacheKey(req){
+function searchNearest(req, res){
+	//sanitize, all parameters should be number
+	var lng = parseFloat(req.query.lng);
+	var lat = parseFloat(req.query.lat);
+	var dis = parseFloat(req.query.dis);
+
+	//validate params
+	if (isNaN(lng) || isNaN(lat) || isNaN(dis)){
+		return res.send('parameter error');
+	}
+
+	//try to hit cache first
+	memcached.get(cacheKeyForNearest(req), function(err, data){
+		//to modify
+		if (err) throw err;
+
+		if (data){
+			//for debug, to delte
+			data.cache = true;
+
+			res.json(data);
+
+		}else{
+			//search nearest cells
+			Cell.findNearestCells(lng, lat, dis, PAGE_SIZE, function(err, cells){
+				if (err) return res.send('internal error');
+
+				if (cells.results.length == 0) return res.send('No result');
+
+				//process result
+				//remove the diagnose info
+				//create the output json object with default value
+				var outputJson = {};
+				outputJson.count = 0;
+				outputJson.results = [];
+
+				//assign value to the output object
+				outputJson.count = cells.results.length;
+				cells.results.forEach(function(result){
+					delete result.obj.loc;
+
+					outputJson.results.push(result.obj);
+				});
+
+				//already get the output json object, output it!
+				res.json(outputJson);
+
+				//after send the data, set cache
+				memcached.set(cacheKeyForNearest(req), outputJson, 0, function(err){
+					//todo:
+					//handle error, not decided how to do it yet...
+				});
+
+			});
+		}
+
+	});
+
+}
+
+// Todo:
+// We can unify the cache fecth interface and use same function to generate the cache key!
+
+/**
+ * Compose key in memcached for cell search
+ */
+
+function cacheKeyForCell(req){
 	var key = req.path + ' ' + JSON.stringify({lac: req.query.lac, cell: req.query.cell});
+
+	return encodeURIComponent(key);
+}
+
+/**
+ * Compose key in memcached for finding nearest cells
+ */
+
+function cacheKeyForNearest(req){
+	var key = req.path + ' ' + JSON.stringify({lng: req.query.lac, lat: req.query.lat, dis: req.query.dis});
 
 	return encodeURIComponent(key);
 }

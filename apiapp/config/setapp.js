@@ -8,8 +8,10 @@ module.exports = function(app, config){
 	app.use(express.logger('dev'));
 	app.use(express.static(path.join(__dirname, 'public')));
 
-	//gate middleware
+	//middleware to auth request
 	app.use(gate.appAuth());
+
+	//middleware to get api access statistics
 	app.use(gate.statistics());
 
 	// development only

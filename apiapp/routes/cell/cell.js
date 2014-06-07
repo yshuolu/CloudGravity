@@ -6,6 +6,12 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**
+ * Predefine variable.
+ */
+
+var EARTH_RADIUS = 6378137; //earth radius in meter
+
+/**
  * Cell schema
  * MCC, MNC, LAC, CELL, LAC16, CELL16, LNG, LAT, O_LNG, O_LAT, PRECISION, ADDRESS
  */
@@ -47,6 +53,33 @@ CellSchema.statics = {
 		this
 			.find({LAC: lac, CELL: cell})
 			.exec(fn);
+	},
+
+	/**
+	 * Find nearest cells with longitude, latitude and distance, and the result is paging.
+	 *
+	 * @param {Number} lng
+	 * @param {Number} lat
+	 * @param {Number} dis
+	 * @param {Number} page
+	 * @param {Function} fn
+	 *
+	 * @api public
+	 */
+
+	findNearestCells: function(lng, lat, dis, limit, fn){
+		//set optional params
+		var optional = {
+						spherical: true, 
+						distanceMultiplier: EARTH_RADIUS, 
+						maxDistance: dis/EARTH_RADIUS, 
+						num: limit
+					   };
+
+		//runCommand geoNear
+		this.collection.geoNear(lng, lat, optional, function(err, cells){
+			fn(err, cells);
+		});
 	}
 }
 

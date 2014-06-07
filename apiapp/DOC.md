@@ -31,3 +31,11 @@ percent encode url
 append &
 
 percent encode param string
+
+#Cell query
+
+Query cell by LAC and CELL:
+api.yun.com/cell?lac=1&cell=2&hex=true
+
+Query cell by LNG LAT and Distance
+api.yun.com/cell/near?lng=1&lat=2&dis=10&page=0
