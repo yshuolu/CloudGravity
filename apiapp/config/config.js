@@ -6,6 +6,7 @@ module.exports = {
 		db: 'mongodb://localhost/data_platform_dev',
 		port: 6666,
 		cacheServer: 'localhost:11211',
-		timestampExpire: 15 //minutes to reject request as replay attack
+		timestampExpire: 15, //minutes to reject request as replay attack
+		consumptionLimit: [10, 500]
 	}
 }

@@ -12,7 +12,9 @@ module.exports = function(app, config){
 	app.use(gate.appAuth());
 
 	//middleware to get api access statistics
-	app.use(gate.statistics());
+	//app.use(gate.statistics());
+
+	app.use(gate.consume());
 
 	// development only
 	app.configure('development', function(){

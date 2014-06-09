@@ -9,8 +9,9 @@ var auth = require('../middlewares/auth');
  * Controllers
  */
 
-var user = require('../routes/user');
-var appController = require('../routes/app');
+var user = require('../routes/user'),
+	appController = require('../routes/app'),
+	admin = require('../routes/admin');
 //var land = require('../routes/land');
 
 module.exports = function(app){
@@ -30,4 +31,8 @@ module.exports = function(app){
 	app.put('/app/:id', auth.userRequired(), appController.modify);
 	app.del('/app/:id', auth.userRequired(), appController.delete);
 	app.post('/app/:id', auth.userRequired(), appController.modifyOrDelete);
+
+	//Admin
+	app.param('accessid', admin.loadApp());
+	app.get('/admin/bill/:accessid', admin.createNextBilling);
 }

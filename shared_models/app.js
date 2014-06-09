@@ -22,7 +22,10 @@ var AppSchema = Schema({
 	accessKey: {type: String, default: ''},
 	user: {type: Schema.Types.ObjectId, ref: 'User'}, 
 	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date, default: Date.now}
+	updatedAt: {type: Date, default: Date.now},
+
+	//billing fields, current billing interval
+	billing: {type: Schema.Types.ObjectId, ref: 'Billing', default: null}
 });
 
 /**
