@@ -10,8 +10,8 @@ var auth = require('../middlewares/auth');
  */
 
 var user = require('../routes/user'),
-	appController = require('../routes/app'),
-	admin = require('../routes/admin');
+	appController = require('../routes/app');
+	//admin = require('../routes/admin');
 //var land = require('../routes/land');
 
 module.exports = function(app){
@@ -33,6 +33,6 @@ module.exports = function(app){
 	app.post('/app/:id', auth.userRequired(), appController.modifyOrDelete);
 
 	//Admin
-	app.param('accessid', admin.loadApp());
-	app.get('/admin/bill/:accessid', admin.createNextBilling);
+	//app.param('accessid', admin.loadApp());
+	//app.get('/admin/bill/:accessid', admin.createNextBilling);
 }

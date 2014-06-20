@@ -25,7 +25,7 @@ var AppSchema = Schema({
 	updatedAt: {type: Date, default: Date.now},
 
 	//billing fields, current billing interval
-	billing: {type: Schema.Types.ObjectId, ref: 'Billing', default: null}
+	plan: {type: Schema.Types.ObjectId, ref: 'BillingPlan', default: null}
 });
 
 /**

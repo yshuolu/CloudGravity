@@ -11,10 +11,16 @@ module.exports = function(app, config){
 	//middleware to auth request
 	app.use(gate.appAuth());
 
+	//
+	app.use(gate.bill());
+
 	//middleware to get api access statistics
 	//app.use(gate.statistics());
 
-	app.use(gate.consume());
+	//app.use(gate.consume());
+
+	//
+	//app.use(gate.recursive());
 
 	// development only
 	app.configure('development', function(){
