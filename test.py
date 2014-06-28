@@ -3,11 +3,12 @@ import sys, urllib2, time, urllib, hmac, hashlib, base64, time
 def tupleSort(tuple):
 	return tuple[0]
 
-url = 'api.yun.com/cell'
+#url = 'api.yun.com/cell'
+url = 'api.91yzh.cn/cell'
 
-access_id = 'f3c563b1407f5784ea1589da350b0c68'
+access_id = '404417da4afad78006bc3da5dbbb233b'
 
-access_key = 'd72afff9735d3467312aaf1d5df06b99'
+access_key = '81d466a66d7fd14c55552fba10cbbb57'
 
 lac = sys.argv[1]
 
@@ -56,5 +57,7 @@ signature = base64.b64encode( m.digest() )
 requestURL = 'http://' + url + '?' + paramString +'&' + 'signature=' + urllib.quote_plus(signature)
 
 #time.sleep(6)
+print requestURL
+
 
 print urllib2.urlopen(requestURL).read()
