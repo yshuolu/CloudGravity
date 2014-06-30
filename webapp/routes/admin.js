@@ -53,23 +53,11 @@ exports.newBillingPlan = function(req, res){
 			level: level
 		});
 
-		var docsToSave = [newPlan];
-
-		//todo:
-		//remove old default billing plan
-
-		if (!req.userApp.plan || req.userApp.plan.level === 0){
-			//make this plan come into force right now
-			req.userApp.plan = newPlan._id;
-
-			docsToSave.push(req.userApp);
-		}
-
-		saveDocArray(docsToSave, function(err){
-			if (err) 
+		newPlan.save(function(err){
+			if (err)
 				return res.send('create new plan error');
-
-			return res.send('create new billing plan success');
+			else
+				return res.send('create new plan success');
 		});
 
 	});

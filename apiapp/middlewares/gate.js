@@ -88,7 +88,50 @@ exports.statistics = function(){
  * Middleware for new billing system.
  */
 
+//No more support for default billing
 exports.bill = function(){
+	function _bill(req, res, next){
+		var plan = req.app.plan;
+
+		if (!plan || plan.isExpired(req.query.timestamp)){
+			//no plan or current plan is expired, need to find a up to date plan
+			BillingPlan.upToDatePlan(req.app, req.query.timestamp, function(err, validPlan){
+				if (err) return next(err);
+
+				if (!validPlan) return next('no up to date plan');
+
+				req.app.plan = validPlan._id;
+
+				req.app.save(function(err){
+					if (err) return next(err);
+
+					//the app has already updated, need to populate the plan
+					req.app.plan = validPlan;
+
+					_bill(req, res, next);
+				});
+			});
+
+		}else if (plan.isExhausted(config.planLimit[plan.level])){
+			//current plan runs out
+			//reject
+			return next('run out of this plan limit');
+
+		}else{
+			//+1
+			return plan.consume(1, function(err){return next(err);});
+
+		}
+	}
+
+	return _bill;
+}
+
+/**
+ * Deprecated!!
+ * To delete later!
+ */
+exports.billDeprecated = function(){
 	function _bill(req, res, next){
 		var plan = req.app.plan;
 
