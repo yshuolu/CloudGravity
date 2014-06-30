@@ -90,11 +90,13 @@ exports.statistics = function(){
 
 exports.bill = function(){
 	function _bill(req, res, next){
-		if (!req.app.plan){
+		var plan = req.app.plan;
+
+		if (!plan){
 			//attach a default plan
 			var defaultPlan = new BillingPlan();
 
-			setDefaultPlan(defaultPlan);
+			defaultPlan.renewDefaultPlan(1 * 60 * 1000);
 
 			req.app.plan = defaultPlan._id;
 
@@ -102,19 +104,19 @@ exports.bill = function(){
 				return next(err);
 			});
 
-		}else if ( isPlanExpired(req.app.plan, req.query.timestamp) && req.app.plan.level == 0){
+		}else if ( plan.isExpired(req.query.timestamp) && plan.level == 0){
 			//default billing plan expire
 			//reset it
-			setDefaultPlan(req.app.plan);
+			plan.renewDefaultPlan(1 * 60 * 1000);
 
-			req.app.plan.save(function(err){
+			plan.save(function(err){
 				return next(err);
 			});
 
-		}else if ( isPlanExpired(req.app.plan, req.query.timestamp) && req.app.plan.level != 0 ){ 
+		}else if ( plan.isExpired(req.query.timestamp) && plan.level != 0 ){ 
 			//high level plan expired
-			//find a valid high level billing plan for this timestamp
-			getValidPlan(req, req.query.timestamp, function(err, plan){
+			//find a up to date high level billing plan for this timestamp
+			BillingPlan.upToDatePlan(req.app, req.query.timestamp, function(err, plan){
 				if (err) return next(err);
 
 				req.app.plan = plan._id;
@@ -126,13 +128,13 @@ exports.bill = function(){
 				});
 			});
 
-		}else if ( isPlanExhausted(req.app.plan) ){
+		}else if ( plan.isExhausted(config.planLimit[plan.level]) ){
 			//reject
 			return next('run out of this plan limit');
 
 		}else{
 			//+1
-			req.app.plan.incrementConsumption(1, function(err){return next(err);});
+			plan.consume(1, function(err){return next(err);});
 		}
 	}
 
@@ -205,35 +207,3 @@ function saveDocArray(array, fn){
 		});
 	});
 }
-
-/**
- * Local function to set default billing plan's attributes
- */
-
-function setDefaultPlan(plan){
-	var interval = 1 * 60 * 1000; // 1 minute
-
-	plan.start = new Date();
-	plan.expire = new Date( plan.start.getTime() + interval );
-	plan.consumption = 1; //set 1 as first consumption
-	plan.level = 0;
-}
-
-/**
- * Local function to test if billing expired
- * Todo: maybe move to the model methods!!
- */
-
-function isPlanExpired(plan, timestamp){
-	if ( plan.expire.getTime() / 1000 <= timestamp ){
-		return true;
-	}
-
-	return false;
-
-}
-
-function isPlanExhausted(plan){
-	return plan.consumption >= config.consumptionLimit[plan.level];
-}
-

@@ -3,7 +3,7 @@
  */
 
 var mongoose = require('mongoose'),
-	Billing = mongoose.model('Billing'),
+	BillingPlan = mongoose.model('BillingPlan'),
 	App = mongoose.model('App');
 
 /**
@@ -14,6 +14,7 @@ exports.loadApp = function(){
 	return function(req, res, next, accessid){
 		App
 			.findOne({accessId: accessid})
+			.populate('plan')
 			.exec(function(err, app){
 				if (!err && app){
 					req.userApp = app;
@@ -30,84 +31,74 @@ exports.loadApp = function(){
  * Create next level 1 billing for user.
  */
 
-exports.createNextBilling = function(req, res){
-	var startDate = new Date();
-	var expireDate = new Date( startDate.getTime() + 1 * 60 * 1000 ); // 1 minute
+exports.newBillingPlan = function(req, res){
+	//
+	var appId = req.userApp._id;
+	var level = 1;
 
-	var newBilling = new Billing({
-		app: req.userApp._id,
-		start: startDate,
-		expire: expireDate,
-		level: 1
-	});
+	//find the latest high level billing plan
+	BillingPlan.latestPlanForApp(appId, function(err, plan){
+		var current = new Date();
 
-	req.userApp.populate('billing', function(err, app){
-		var oldBilling = app.billing;
-
-		if (err) return res.send('create billing failed');
-
-		if (!oldBilling || oldBilling.level === 0){
-			req.userApp.billing = newBilling._id;
-
-			newBilling.save(function(err){
-				if (err) return res.send('create billing failed');
-
-				req.userApp.save(function(err){
-					if (err) return res.send('create billing failed');
-
-					if (oldBilling){
-						oldBilling.remove(function(err){
-							if (err) return res.send('create billing failed');
-
-							return res.send('create billing success');
-						});
-					}else{
-						return res.send('create billing success');
-					}
-				});
-			});
-
-		}else{
-			//add to tail
-			findBillingLinkListTail(oldBilling, function(err, tail){
-				if (err) return res.send('create billing failed');
-
-				tail.next = newBilling._id;
-
-				//
-				if ( new Date().getTime() < tail.expire.getTime() ){
-					newBilling.start = tail.expire;
-					newBilling.expire = new Date( tail.expire.getTime() + 1 * 60 * 1000 );
-				}
-
-				newBilling.save(function(err){
-					if (err) return res.send('create billing failed');
-
-					tail.save(function(err){
-						if (err) return res.send('create billing failed');
-
-						return res.send('create billing success');
-					});
-				});
-			});
+		//if plan exists and not expired yet
+		if (plan && current < plan.expire){
+			current = plan.expire; //make continuous plan interval after the latest one
 		}
+
+		//create new billing plan
+		var newPlan = new BillingPlan({
+			app: appId,
+			start: current,
+			expire: new Date( current.getTime() + 10 * 60 * 1000 ),
+			level: level
+		});
+
+		var docsToSave = [newPlan];
+
+		//todo:
+		//remove old default billing plan
+
+		if (!req.userApp.plan || req.userApp.plan.level === 0){
+			//make this plan come into force right now
+			req.userApp.plan = newPlan._id;
+
+			docsToSave.push(req.userApp);
+		}
+
+		saveDocArray(docsToSave, function(err){
+			if (err) 
+				return res.send('create new plan error');
+
+			return res.send('create new billing plan success');
+		});
 
 	});
 }
 
 /**
- * Local functions
+ * Local function to save an array of documents at once.
  */
 
-function findBillingLinkListTail(billing, fn){
-	if (!billing) return null;
+function saveDocArray(array, fn){
+	var reside = array.length;
 
-	billing.populate('next', function(err, billing){
-		if (!billing.next){
-			fn(err, billing);
+	array.forEach(function(doc){
+		doc.save(function(err){
+			//error happens in other iteration
+			if (reside == -1){
+				return;
+			}
 
-		}else{
-			findBillingLinkListTail(billing.next, fn);
-		}
+			if (err) {
+				reside = -1;
+				return fn(err);
+			}
+
+			reside--;
+
+			if (reside == 0){
+				fn();
+			}
+		});
 	});
 }

@@ -1,0 +1,15 @@
+{
+	"development": [
+		//level 0
+		{
+			"period": 1, //1 minute
+			"limit": 10,
+		},
+
+		//level 1
+		{
+			"period": 5, //5 minute
+			"limit": 100
+		}
+	]
+}
