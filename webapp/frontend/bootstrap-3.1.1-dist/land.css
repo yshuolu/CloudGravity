@@ -28,10 +28,6 @@ a {
 	text-decoration: none;
 }
 
-a:visited {
-	color: inherit;
-}
-
 /*navigation bar*/
 
 .navbar {
@@ -59,7 +55,7 @@ a:visited {
 }
 
 .nav li a.active {
-	background-color: gray;
+	background-image: url('./images/active.jpg');
 }
 
 .navbar-header {
@@ -76,13 +72,82 @@ a:visited {
 	float: left;
 }
 
+/* global */
+i.user {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	vertical-align: middle;
+	background-image: url(./images/user.jpg);
+	margin-right: 10px;
+}
+
+i.home {
+	display: inline-block;
+	vertical-align: middle;
+	background-image: url(./images/home.jpg);
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+i.cloud {
+	display: inline-block;
+	vertical-align: middle;
+	background-image: url(./images/cloud.jpg);
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+i.global {
+	display: inline-block;
+	vertical-align: middle;
+	background-image: url(./images/global.jpg);
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+i.key {
+	display: inline-block;
+	vertical-align: middle;
+	background-image: url(./images/key.jpg);
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
 /*  */
-.heading {
+#scroller { 
+	position: relative;
 	height: 356px;
+	overflow: hidden;
+}
+
+#scroller table {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+.page {
+	height: 500px;
+}
+
+.page1 {
 	background-color: #0C79B4;
 }
 
+.page2 {
+	background-color: #45AA9F;
+}
+
+.page3 {
+	background-color: #336076;
+}
+
 .intro {
+	background-color: #F9FCF5;
 }
 
 .tail {
@@ -96,6 +161,8 @@ a:visited {
 	padding: 0;
 	font-size: 20px;
 	color: #454545;
+	border-spacing: 0;
+	border-collapse: collapse;
 }
 
 .shelf a {
@@ -103,7 +170,6 @@ a:visited {
 	overflow: hidden;
 	width: 250px;
 	height: 200px;
-	background-color: yellow;
 }
 
 .promote {
@@ -127,6 +193,22 @@ a:visited {
 	background-color: red;
 }
 
+.advan tr:first-child td:first-child {
+	background-color: #B87E62;
+}
+
+.advan tr:first-child td:last-child {
+	background-color: #E3B13F;
+}
+
+.advan tr:last-child td:first-child {
+	background-color: #77C137;
+}
+
+.advan tr:last-child td:last-child {
+	background-color: #3474A6;
+}
+
 .advan img {
 	width: 70px;
 	height: 74px;
@@ -139,7 +221,8 @@ a:visited {
 	font-size: 18px;
 	color: #FFFFFF;
 	font-weight: bold;
-	margin: 0;
+	margin-top: 10px;
+	line-height: 100%;
 	padding: 0;
 	text-indent: 0em;
 }
@@ -151,7 +234,7 @@ a:visited {
 .subtitle {
 	font-size: 12px;
 	color: #FFFFFF;
-	margin: 7px 18px;
+	margin: -15px 18px 7px 18px;
 	padding: 0;
 	text-indent: 0em;
 }
@@ -203,8 +286,12 @@ a:visited {
 	color: #FFFFFF;
 }
 
+.misc a {
+	color: #FFFFFF;
+}
+
 .barcode {
-	width: 300px;
+	width: 290px;
 	margin-top: 14px;
 }
 
