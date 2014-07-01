@@ -77,10 +77,19 @@ function search(req, res){
 
 				if (cells.length == 0) return res.send('No result');
 
+				//compose output json
+				var outputJson = [];
+
 				//process result, remove the 'loc' field
-				cells.forEach(function(cell){ delete cell.loc; });
+				cells.forEach(function(doc){ 
+					var plainObject = doc.toObject();
+					delete plainObject.loc;
+
+					outputJson.push(plainObject);
+				});
+
 				//output the result
-				res.json(cells);
+				res.json(outputJson);
 
 				/**
 				 * After sent the contents, cache them in memcached.
@@ -90,7 +99,7 @@ function search(req, res){
 				 * So no more process here.
 				 * Set cache item never expired.
 				 */
-				memcached.set(cacheKeyForCell(req), cells, 0, function(err){
+				memcached.set(cacheKeyForCell(req), outputJson, 0, function(err){
 					//todo:
 					//handle error, not decided how to do it yet...
 				});
