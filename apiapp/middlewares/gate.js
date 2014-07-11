@@ -128,60 +128,13 @@ exports.bill = function(){
 }
 
 /**
- * Deprecated!!
- * To delete later!
+ * test
  */
-exports.billDeprecated = function(){
-	function _bill(req, res, next){
-		var plan = req.app.plan;
 
-		if (!plan){
-			//attach a default plan
-			var defaultPlan = new BillingPlan();
-
-			defaultPlan.renewDefaultPlan(1 * 60 * 1000);
-
-			req.app.plan = defaultPlan._id;
-
-			saveDocArray([req.app, defaultPlan], function(err){
-				return next(err);
-			});
-
-		}else if ( plan.isExpired(req.query.timestamp) && plan.level == 0){
-			//default billing plan expire
-			//reset it
-			plan.renewDefaultPlan(1 * 60 * 1000);
-
-			plan.save(function(err){
-				return next(err);
-			});
-
-		}else if ( plan.isExpired(req.query.timestamp) && plan.level != 0 ){ 
-			//high level plan expired
-			//find a up to date high level billing plan for this timestamp
-			BillingPlan.upToDatePlan(req.app, req.query.timestamp, function(err, plan){
-				if (err) return next(err);
-
-				req.app.plan = plan._id;
-
-				req.app.save(function(err){
-					if (err) return next(err);
-
-					_bill(req, res, next);
-				});
-			});
-
-		}else if ( plan.isExhausted(config.planLimit[plan.level]) ){
-			//reject
-			return next('run out of this plan limit');
-
-		}else{
-			//+1
-			plan.consume(1, function(err){return next(err);});
-		}
+exports.test = function(){
+	return function(req, res, next){
+		res.send('fuck you');
 	}
-
-	return _bill;
 }
  
 

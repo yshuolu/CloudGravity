@@ -15,6 +15,7 @@ var UserSchema = Schema({
 	email: { type: String, default: '' },
 	hash: {type: String, default: '' },
 	salt: {type: String, default: '' },
+	trialKey: {type: String, default: ''},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: {type: Date, default: Date.now}
 });
@@ -29,6 +30,9 @@ UserSchema
 		this._pass = pass;
 		this.salt = this.generateSalt();
 		this.hash = this.generateHash(pass);
+		
+		//set user trialKey, which is just a random number as salt
+		this.trialKey = this.generateSalt();
 	})
 	.get(function(){
 		return this._pass;

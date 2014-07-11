@@ -8,19 +8,14 @@ module.exports = function(app, config){
 	app.use(express.logger('dev'));
 	app.use(express.static(path.join(__dirname, 'public')));
 
+	//middleware to auth trial request
+	app.use('/trial', gate.test());
+
 	//middleware to auth request
 	app.use(gate.appAuth());
 
 	//
 	app.use(gate.bill());
-
-	//middleware to get api access statistics
-	//app.use(gate.statistics());
-
-	//app.use(gate.consume());
-
-	//
-	//app.use(gate.recursive());
 
 	// development only
 	app.configure('development', function(){
