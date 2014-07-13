@@ -95,6 +95,25 @@ UserSchema.pre('save', function(next){
 });
 
 /**
+ * Statics
+ */
+UserSchema.statics = {
+	/**
+	 * Find User by the email
+	 *
+	 * @param {String} email
+	 * @param {Function} fn; fn(err, user)
+	 *
+	 * @api public
+	 */
+	findByEmail: function(email, fn){
+		this
+			.findOne({email: email})
+			.exec(fn);
+	}
+}
+
+/**
  * Methods
  */
 

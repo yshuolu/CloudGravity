@@ -9,6 +9,8 @@
 
 var mongoose = require('mongoose'),
 	App = mongoose.model('App'),
+	User = mongoose.model('User'),
+	Trial = mongoose.model('Trial'),
 	ApiStat = mongoose.model('ApiStat'),
 	BillingPlan = mongoose.model('BillingPlan'),
 	crypto = require('crypto');
@@ -128,13 +130,64 @@ exports.bill = function(){
 }
 
 /**
- * test
+ *
  */
-
-exports.test = function(){
+exports.trialAuth = function(){
 	return function(req, res, next){
-		res.send('fuck you');
-	}
+		//get user by email
+		User.findByEmail(req.header('User-Email'), function(err, user){
+			if (err || !user) return next('no such user!');
+
+			if ( user.trialKey === req.header('User-Trial-Key') ){
+				req.user = user;
+				next();
+			}else{
+				next('invalid trial key');
+			}
+		});
+	};
+}
+
+/**
+ *
+ */
+exports.countTrial = function(){
+	return function(req, res, next){
+		Trial.trialOfUser(req.user._id, function(err, trial){
+			if (err) return next('internal error');
+
+			if (!trial){
+				var newTrial = new Trial({
+					user: req.user._id
+				});
+
+				newTrial.renew(1 * 60 * 1000, 10, function(err){
+					if (err) return next('internal error');
+
+					//everything goes well
+					return next();
+				});
+
+			}else if (trial.isExpired()){
+				trial.renew(1 * 60 * 1000, 10, function(err){
+					if (err) return next('internal error');
+
+					//everything goes well
+					return next();
+				});
+
+			}else if (trial.isExhausted()){
+				return next('run out of api in this trial period');
+
+			}else{
+				trial.consume(1, function(err){
+					if (err) return next('fail to count api trial');
+
+					return next();
+				});
+			}
+		});
+	};
 }
  
 

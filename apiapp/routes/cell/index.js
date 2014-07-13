@@ -7,6 +7,7 @@ require('./cell');
 
 var app = require('../../app'),
 	path = require('path'),
+	util = require('util'),
 	base = '/' + path.basename(__dirname), //get last component, aka controller name
 	mongoose = require('mongoose'),
 	Cell = mongoose.model('Cell'),
@@ -17,10 +18,10 @@ var app = require('../../app'),
  */
 
 //search the cell with LAC and CELL number: /cell
-app.get(base, search);
+app.magicGet(base, search, trim);
 
 //search nearest cells with LNG, LAT and Dis: /cell/near
-app.get('/cell/near', searchNearest);
+app.magicGet(path.join(base, 'near'), searchNearest, trim);
 
 //predefined hex radix
 var HEX_RADIX = 16
@@ -31,9 +32,11 @@ var PAGE_SIZE = 10;
 
 /**
  * Search cell with criteria and return cell info
+ *
+ * This method attach the outputObj to res object
  */
 
-function search(req, res){
+function search(req, res, next){
 	/**
 	 * There are two kinds of query. One is decimal lac and cell, which both of params should
 	 * be number; and another one is hex lac and cell, which both of params should be string.
@@ -63,12 +66,9 @@ function search(req, res){
 		if (err) throw err;
 
 		if (data){
-			//hit cache!!
-
-			//for debug
-			data[0]['cache'] = 1;
-			
-			res.json(data);
+			//hit cache
+			res.outputObj = data;
+			return next();
 
 		}else{
 			//did not hit the cache, query database now
@@ -77,19 +77,20 @@ function search(req, res){
 
 				if (cells.length == 0) return res.send('No result');
 
-				//compose output json
-				var outputJson = [];
+				//compose output json, which is an array
+				res.outputObj = [];
 
-				//process result, remove the 'loc' field
+				//doc object to plain object
 				cells.forEach(function(doc){ 
 					var plainObject = doc.toObject();
 					delete plainObject.loc;
+					delete plainObject._id;
 
-					outputJson.push(plainObject);
+					res.outputObj.push(plainObject);
 				});
 
-				//output the result
-				res.json(outputJson);
+				//get the final result, next
+				next();
 
 				/**
 				 * After sent the contents, cache them in memcached.
@@ -99,7 +100,7 @@ function search(req, res){
 				 * So no more process here.
 				 * Set cache item never expired.
 				 */
-				memcached.set(cacheKeyForCell(req), outputJson, 0, function(err){
+				memcached.set(cacheKeyForCell(req), res.outputObj, 0, function(err){
 					//todo:
 					//handle error, not decided how to do it yet...
 				});
@@ -117,7 +118,7 @@ function search(req, res){
  * Now this method just support search the first 10 nearest cells. We will do paging on results...
  */
 
-function searchNearest(req, res){
+function searchNearest(req, res, next){
 	//sanitize, all parameters should be number
 	var lng = parseFloat(req.query.lng);
 	var lat = parseFloat(req.query.lat);
@@ -134,10 +135,9 @@ function searchNearest(req, res){
 		if (err) throw err;
 
 		if (data){
-			//for debug, to delte
-			data.cache = true;
-
-			res.json(data);
+			//hit cache
+			res.outputObj = data;
+			return next();
 
 		}else{
 			//search nearest cells
@@ -147,34 +147,42 @@ function searchNearest(req, res){
 				if (cells.results.length == 0) return res.send('No result');
 
 				//process result
-				//remove the diagnose info
-				//create the output json object with default value
-				var outputJson = {};
-				outputJson.count = 0;
-				outputJson.results = [];
+				//ignore the diagnose info
+				//create the output json object
+				res.outputObj = [];
 
 				//assign value to the output object
-				outputJson.count = cells.results.length;
-				cells.results.forEach(function(result){
-					delete result.obj.loc;
+				//res.outputObj.count = cells.results.length;
+				cells.results.forEach(function(item){
+					delete item.obj.loc;
+					delete item.obj._id;
 
-					outputJson.results.push(result.obj);
+					res.outputObj.push(item.obj);
 				});
 
-				//already get the output json object, output it!
-				res.json(outputJson);
+				//already get the output json object, next
+				next();
 
 				//after send the data, set cache
-				memcached.set(cacheKeyForNearest(req), outputJson, 0, function(err){
+				memcached.set(cacheKeyForNearest(req), res.outputObj, 0, function(err){
 					//todo:
 					//handle error, not decided how to do it yet...
 				});
-
 			});
 		}
 
 	});
 
+}
+
+function trim(req, res){
+	trimmedResult = [];
+
+	res.outputObj.forEach(function(cell){
+		trimmedResult.push(util.subfields(cell, ['LNG', 'LAT', 'ADDRESS']));
+	});
+
+	res.json(trimmedResult);
 }
 
 // Todo:
