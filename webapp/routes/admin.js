@@ -4,7 +4,9 @@
 
 var mongoose = require('mongoose'),
 	BillingPlan = mongoose.model('BillingPlan'),
-	App = mongoose.model('App');
+	App = mongoose.model('App'),
+	env = process.env.NODE_ENV || 'development',
+    config = require('../config/config')[env];
 
 /**
  * Middleware to load app from access id
@@ -49,7 +51,7 @@ exports.newBillingPlan = function(req, res){
 		var newPlan = new BillingPlan({
 			app: appId,
 			start: current,
-			expire: new Date( current.getTime() + 10 * 60 * 1000 ),
+			expire: new Date( current.getTime() + minutesToMilliseconds(config.billPlanInterval) ),
 			level: level
 		});
 
@@ -89,4 +91,9 @@ function saveDocArray(array, fn){
 			}
 		});
 	});
+}
+
+
+function minutesToMilliseconds(minutes){
+	return minutes * 60 * 1000;
 }

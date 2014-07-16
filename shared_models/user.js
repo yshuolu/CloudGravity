@@ -15,7 +15,7 @@ var UserSchema = Schema({
 	email: { type: String, default: '' },
 	hash: {type: String, default: '' },
 	salt: {type: String, default: '' },
-	trialKey: {type: String, default: ''},
+	trialKey: {type: String, default: ''}, // user should be assigned a trial key for api trial
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: {type: Date, default: Date.now}
 });

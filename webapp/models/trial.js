@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
  */
 
 var TrialSchema = Schema({
-	user: {type: Schema.Types.ObjectId, ref:'User'},
+	user: {type: Schema.Types.ObjectId, ref:'User'}, 
 	remaining: {type: Number, default: 0},
 	expire: {type: Date, default: Date.now}
 });

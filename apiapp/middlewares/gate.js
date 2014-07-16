@@ -130,13 +130,17 @@ exports.bill = function(){
 }
 
 /**
+ * Middleware for user trial auth
  *
+ * It's different from appAuth by that it's auth by user email and user trial key.
+ * Attach user object to req object.
  */
 exports.trialAuth = function(){
 	return function(req, res, next){
 		//get user by email
 		User.findByEmail(req.header('User-Email'), function(err, user){
-			if (err || !user) return next('no such user!');
+			if (err) return next('internal error');
+			if (!user) return next('no such user!');
 
 			if ( user.trialKey === req.header('User-Trial-Key') ){
 				req.user = user;
@@ -149,7 +153,9 @@ exports.trialAuth = function(){
 }
 
 /**
+ * Middleware for api trial count
  *
+ * Decrease the trial period remainings
  */
 exports.countTrial = function(){
 	return function(req, res, next){
@@ -161,7 +167,7 @@ exports.countTrial = function(){
 					user: req.user._id
 				});
 
-				newTrial.renew(1 * 60 * 1000, 10, function(err){
+				newTrial.renew(minutesToMilliseconds(config.trialInterval), config.trialLimit, function(err){
 					if (err) return next('internal error');
 
 					//everything goes well
@@ -169,7 +175,7 @@ exports.countTrial = function(){
 				});
 
 			}else if (trial.isExpired()){
-				trial.renew(1 * 60 * 1000, 10, function(err){
+				trial.renew(minutesToMilliseconds(config.trialInterval), config.trialLimit, function(err){
 					if (err) return next('internal error');
 
 					//everything goes well
@@ -255,4 +261,8 @@ function saveDocArray(array, fn){
 			}
 		});
 	});
+}
+
+function minutesToMilliseconds(minutes){
+	return minutes * 60 * 1000;
 }
