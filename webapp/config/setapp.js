@@ -20,7 +20,8 @@ module.exports = function(app, config){
 	app.use(express.bodyParser());
 	//app.use(express.favicon());
 	app.use(express.static(path.join(rootDir, 'public')));
-	app.use(auth.sessionAuth());
+
+	//app.use(auth.sessionAuth());
 
 	// development only
 	app.configure('development', function(){

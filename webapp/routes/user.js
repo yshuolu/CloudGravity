@@ -42,7 +42,8 @@ exports.signin = function(req, res){
 				//generate a new session
 				//bind user object id to this session
 				req.session.regenerate(function(err){
-					req.session.userId = user.id;
+					//attach user object to session
+					req.session.user = user.toObject();
 
 					//check if keep signin for a period
 					if (req.body.keepin){

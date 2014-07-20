@@ -11,7 +11,8 @@ var auth = require('../middlewares/auth');
 
 var user = require('../routes/user'),
 	appController = require('../routes/app');
-	admin = require('../routes/admin');
+	admin = require('../routes/admin'),
+	order = require('../routes/order');
 //var land = require('../routes/land');
 
 module.exports = function(app){
@@ -32,7 +33,14 @@ module.exports = function(app){
 	app.del('/app/:id', auth.userRequired(), appController.delete);
 	app.post('/app/:id', auth.userRequired(), appController.modifyOrDelete);
 
+	//Order
+	app.post('/order/new', auth.userRequired(), order.create);
+	app.get('/order/:shortId', order.show);
+
 	//Admin
-	app.param('accessid', admin.loadApp());
-	app.get('/admin/bill/:accessid', admin.newBillingPlan);
+	app.post('/admin/signup', admin.signup);
+	app.post('/admin/invite', admin.invite);
+	app.post('/admin/approve', admin.newBillingPlan);
+	// app.param('accessid', admin.loadApp());
+	// app.get('/admin/bill/:accessid', admin.newBillingPlan);
 }

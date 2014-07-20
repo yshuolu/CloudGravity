@@ -17,7 +17,8 @@ var UserSchema = Schema({
 	salt: {type: String, default: '' },
 	trialKey: {type: String, default: ''}, // user should be assigned a trial key for api trial
 	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date, default: Date.now}
+	updatedAt: {type: Date, default: Date.now},
+	isAdmin: {type: Boolean, default: false} // to identify if this user is admin
 });
 
 /**
