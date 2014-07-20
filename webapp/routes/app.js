@@ -15,7 +15,7 @@ var mongoose = require('mongoose'),
 
 exports.loadApp = function(){
 	return function(req, res, next, id){
-		App.findByName(req.user._id, id, function(err, app){
+		App.findByName(req.session.user._id, id, function(err, app){
 			if (!err && app){
 				//fetch the app object
 				req.userApp = app;
@@ -34,7 +34,7 @@ exports.loadApp = function(){
 
 exports.create = function(req, res){
 	var newApp = new App(req.body);
-	newApp.user = req.user._id;
+	newApp.user = req.session.user._id;
 
 	//assign auth info to new created app
 	newApp.refreshAuth();
@@ -55,10 +55,10 @@ exports.create = function(req, res){
  */
 
 exports.list = function(req, res){
-	if (req.user){
-		App.list({user: req.user._id}, function(err, apps){
+	if (req.session.user){
+		App.list({user: req.session.user._id}, function(err, apps){
 			//no app created, render the page directly
-			if (apps.length == 0) return res.render('applist', {user: req.user, apps: [], cost: 0});
+			if (apps.length == 0) return res.render('applist', {user: req.session.user, apps: [], cost: 0});
 
 			//has app list
 			//count all api cost
@@ -80,7 +80,7 @@ exports.list = function(req, res){
 
 						//check end point
 						if (resid == 0){
-							res.render('applist', {user: req.user, apps: apps, cost: totalApiCount});
+							res.render('applist', {user: req.session.user, apps: apps, cost: totalApiCount});
 						}
 					});
 			}
@@ -99,7 +99,7 @@ exports.list = function(req, res){
 
 exports.show = function(req, res){
 	ApiStat.fetchStatOfApp(req.userApp._id, function(err, stats){
-		res.render('showapp', {user: req.user, app: req.userApp, stats: stats});
+		res.render('showapp', {user: req.session.user, app: req.userApp, stats: stats});
 	});
 }
 
@@ -143,7 +143,7 @@ exports.delete = function(req, res){
  */
 
 exports.createPage = function(req, res){
-	res.render('createapp', {user: req.user});
+	res.render('createapp', {user: req.session.user});
 }
 
 

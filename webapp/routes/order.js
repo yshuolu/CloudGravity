@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 
 exports.create = function(req, res, next){
 	//get corresponding app object
-	App.findByName(req.user._id, req.body.name, function(err, app){
+	App.findByName(req.session.user._id, req.body.name, function(err, app){
 		if (err) return next(err);
 
 		if (!app) return next('invalid parameter');

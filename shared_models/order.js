@@ -3,8 +3,8 @@
  */
 
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema,
-	alphaId = require('../utils/alphaid');
+	Schema = mongoose.Schema;
+	//alphaId = require('../utils/alphaid');
 
 /**
  * Order schema
@@ -51,11 +51,11 @@ OrderSchema.path('pending').validate(function(pending, fn){
  * Virtuals
  */
 
-OrderSchema
-	.virtual('shortId')
-	.get(function(){
-		return alphaId.encode(this.orderId);
-	});
+// OrderSchema
+// 	.virtual('shortId')
+// 	.get(function(){
+// 		return alphaId.encode(this.orderId);
+// 	});
 
 //
 mongoose.model('Order', OrderSchema);

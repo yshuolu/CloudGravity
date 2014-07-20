@@ -95,6 +95,11 @@ exports.bill = function(){
 	function _bill(req, res, next){
 		var plan = req.app.plan;
 
+		//to fix bug, sometimes plan is just the object id
+		//cause crash
+		//to modify
+		//if ( !(isExpired in plan) ) return next();
+
 		if (!plan || plan.isExpired(req.query.timestamp)){
 			//no plan or current plan is expired, need to find a up to date plan
 			BillingPlan.upToDatePlan(req.app, req.query.timestamp, function(err, validPlan){

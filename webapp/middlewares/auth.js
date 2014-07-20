@@ -29,7 +29,7 @@ exports.sessionAuth = function(){
 
 exports.userRequired = function(){
 	function _userRequired(req, res, next){
-		if (!req.user){
+		if (!req.session.user){
 			next(new Error('user not login!'));
 		}else{
 			next();

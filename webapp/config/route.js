@@ -40,7 +40,7 @@ module.exports = function(app){
 	//Admin
 	app.post('/admin/signup', admin.signup);
 	app.post('/admin/invite', admin.invite);
-	app.post('/admin/approve', admin.newBillingPlan);
+	app.post('/admin/approve', auth.userRequired(), admin.loadOrder(), admin.newBillingPlan);
 	// app.param('accessid', admin.loadApp());
 	// app.get('/admin/bill/:accessid', admin.newBillingPlan);
 }
