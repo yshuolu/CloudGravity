@@ -13,7 +13,8 @@ var mongoose = require('mongoose'),
 	Trial = mongoose.model('Trial'),
 	ApiStat = mongoose.model('ApiStat'),
 	BillingPlan = mongoose.model('BillingPlan'),
-	crypto = require('crypto');
+	crypto = require('crypto'),
+	newError = require('../config/error').newError;
 
 //Todo: modify the way to get config
 var env = process.env.NODE_ENV || 'development',
@@ -29,21 +30,21 @@ var env = process.env.NODE_ENV || 'development',
 exports.appAuth = function(){
 	return function(req, res, next){
 		//validate the timestamp
-		if (!req.query.timestamp) return next(new Error('no timestamp'));
+		if (!req.query.timestamp) return next(newError('INVALID_TIMESTAMP'));
 
 		var requestTimestamp = parseInt(req.query.timestamp);
 
-		if (isNaN(requestTimestamp)) return next(new Error('invalid timestamp'));
+		if (isNaN(requestTimestamp)) return next(newError('INVALID_TIMESTAMP'));
 
 		var currentTimestamp = Math.round( new Date().getTime() / 1000 )
 
 		if (currentTimestamp - requestTimestamp > config.timestampExpire * 60){ 
 			//reject the request as replay attack
-			return next(new Error('timestamp too far'));
+			return next(newError('INVALID_TIMESTAMP'));
 		}
 
 		//check if the access id in params
-		if (!req.query.access_id) return next(new Error('no access id'));
+		if (!req.query.access_id) return next(newError('INVALID_ACCESSID'));
 
 		App
 			.findOne({accessId: req.query.access_id})
@@ -55,11 +56,11 @@ exports.appAuth = function(){
 					if ( verifySignature(req) ){
 						next();
 					}else{
-						next(new Error('invalid signature'));
+						next(newError('INVALID_SIGNATURE'));
 					}
 
 				}else{
-					next(new Error('invalid app access id'));
+					next(newError('INVALID_ACCESSID'));
 				}
 			});
 	}
@@ -80,7 +81,7 @@ exports.statistics = function(){
 
 			}else{
 				//can not increment the api count
-				next(new Error('update api count failed!'));
+				next(newError('INTERNAL'));
 			}
 		});
 	}
@@ -98,14 +99,14 @@ exports.bill = function(){
 		//to fix bug, sometimes plan is just the object id
 		//cause crash
 		//to modify
-		//if ( !(isExpired in plan) ) return next();
+		if ( !('isExpired' in plan) ) return next();
 
 		if (!plan || plan.isExpired(req.query.timestamp)){
 			//no plan or current plan is expired, need to find a up to date plan
 			BillingPlan.upToDatePlan(req.app, req.query.timestamp, function(err, validPlan){
 				if (err) return next(err);
 
-				if (!validPlan) return next('no up to date plan');
+				if (!validPlan) return next(newError('NO_PLAN'));
 
 				req.app.plan = validPlan._id;
 
@@ -122,7 +123,7 @@ exports.bill = function(){
 		}else if (plan.isExhausted(config.planLimit[plan.level])){
 			//current plan runs out
 			//reject
-			return next('run out of this plan limit');
+			return next(newError('PLAN_OUT'));
 
 		}else{
 			//+1
@@ -144,14 +145,14 @@ exports.trialAuth = function(){
 	return function(req, res, next){
 		//get user by email
 		User.findByEmail(req.header('User-Email'), function(err, user){
-			if (err) return next('internal error');
-			if (!user) return next('no such user!');
+			if (err) return next(err);
+			if (!user) return next(newError('INVALID_TRIAL'));
 
 			if ( user.trialKey === req.header('User-Trial-Key') ){
 				req.user = user;
 				next();
 			}else{
-				next('invalid trial key');
+				next(newError('INVALID_TRIAL'));
 			}
 		});
 	};
@@ -165,7 +166,7 @@ exports.trialAuth = function(){
 exports.countTrial = function(){
 	return function(req, res, next){
 		Trial.trialOfUser(req.user._id, function(err, trial){
-			if (err) return next('internal error');
+			if (err) return next(err);
 
 			if (!trial){
 				var newTrial = new Trial({
@@ -173,7 +174,7 @@ exports.countTrial = function(){
 				});
 
 				newTrial.renew(minutesToMilliseconds(config.trialInterval), config.trialLimit, function(err){
-					if (err) return next('internal error');
+					if (err) return next(err);
 
 					//everything goes well
 					return next();
@@ -181,18 +182,18 @@ exports.countTrial = function(){
 
 			}else if (trial.isExpired()){
 				trial.renew(minutesToMilliseconds(config.trialInterval), config.trialLimit, function(err){
-					if (err) return next('internal error');
+					if (err) return next(err);
 
 					//everything goes well
 					return next();
 				});
 
 			}else if (trial.isExhausted()){
-				return next('run out of api in this trial period');
+				return next(newError('TRIAL_OUT'));
 
 			}else{
 				trial.consume(1, function(err){
-					if (err) return next('fail to count api trial');
+					if (err) return next(err);
 
 					return next();
 				});

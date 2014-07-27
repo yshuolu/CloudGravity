@@ -72,6 +72,11 @@ require('./config/setapp')(app, config);
 require('./config/boot')(app);
 
 /**
+ * Error handler
+ */
+require('./config/error').errorConfig(app);
+
+/**
  * Launch the app!
  */
 

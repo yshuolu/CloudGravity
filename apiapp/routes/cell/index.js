@@ -11,7 +11,8 @@ var app = require('../../app'),
 	base = '/' + path.basename(__dirname), //get last component, aka controller name
 	mongoose = require('mongoose'),
 	Cell = mongoose.model('Cell'),
-	memcached = app.memcached;
+	memcached = app.memcached,
+	newError = require('../../config/error').newError;
 
 /**
  * Set up the routing within this namespace
@@ -58,7 +59,7 @@ function search(req, res, next){
 	//check if params are number
 	if ( isNaN(req.query.lac) || isNaN(req.query.cell) ) {
 		//param error
-		return res.send('parameter error');
+		return next(newError('INVALID_PARAM'));
 	}
 
 	//try to hit the cache first
@@ -75,7 +76,7 @@ function search(req, res, next){
 			Cell.findByLacAndCell(req.query.lac, req.query.cell, function(err, cells){
 				if (err) return res.send('internal error');
 
-				if (cells.length == 0) return res.send('No result');
+				if (cells.length == 0) return next(newError('NO_RESULT'));
 
 				//compose output json, which is an array
 				res.outputObj = [];
@@ -126,7 +127,7 @@ function searchNearest(req, res, next){
 
 	//validate params
 	if (isNaN(lng) || isNaN(lat) || isNaN(dis)){
-		return res.send('parameter error');
+		return res.send(newError('INVALID_PARAM'));
 	}
 
 	//try to hit cache first
@@ -142,9 +143,9 @@ function searchNearest(req, res, next){
 		}else{
 			//search nearest cells
 			Cell.findNearestCells(lng, lat, dis, PAGE_SIZE, function(err, cells){
-				if (err) return res.send('internal error');
+				if (err) return next(err);
 
-				if (cells.results.length == 0) return res.send('No result');
+				if (cells.results.length == 0) return next(newError('NO_RESULT'));
 
 				//process result
 				//ignore the diagnose info

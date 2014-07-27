@@ -22,11 +22,6 @@ module.exports = function(app, config){
 	app.use('/trial', gate.trialAuth());
 	//middleware for count trial, only apply to trial request
 	app.use('/trial', gate.countTrial());
-
-	// development only
-	app.configure('development', function(){
-	  app.use(express.errorHandler());
-	});
 }
 
 /**

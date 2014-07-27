@@ -39,3 +39,17 @@ api.yun.com/cell?lac=1&cell=2&hex=true
 
 Query cell by LNG LAT and Distance
 api.yun.com/cell/near?lng=1&lat=2&dis=10&page=0
+
+
+#Error code
+
+100	not found
+101	internal error
+102	invalid parameter
+103	no result
+104	invalid timestamp
+105	invalid signature
+106	app not found	
+107	
+
+
