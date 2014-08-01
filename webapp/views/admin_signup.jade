@@ -1,0 +1,22 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 注册开发者账号
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/signup.css', rel='stylesheet')
+	body
+		div.signup-area
+			a.logo(href='/')
+				img(src='/images/logo.png')
+			form.signup-form(action='/admin/signup', method='post')
+				input(type='email', name='email', placeholder='邮箱', required, autofocus)
+				input(type='name', name='name', placeholder='组织（个人）名')
+				input(type='password', name='pass', placeholder='密码', required, pattern='.{6,}', title='至少6位密码')
+				input(type='text', name='invitation', placeholder='邀请码', required)
+				button(type='submit') 注册
+			a.login.pull-right(href='/signin') 已有账号？
+
+		if error != null
+			p.error
+				= error

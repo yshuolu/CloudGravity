@@ -10,7 +10,8 @@ var mongoose = require('mongoose'),
 	Order = mongoose.model('Order'),
 	alphaId = require('../utils/alphaid'),
 	env = process.env.NODE_ENV || 'development',
-    config = require('../config/config')[env];
+    config = require('../config/config')[env],
+    moment = require('moment');
 
 /**
  * Middleware to load app from access id
@@ -98,17 +99,46 @@ exports.signup = function(req, res, next){
 			admin.save(function(err, user){
 				if (err) return next(err);
 
-				req.session.userId = user.id;
-				req.session.isAdmin = true;
+				req.session.user = user;
 
 				//delete used invitation
 				invitation.remove(function(err){
 					if (err) return next(err);
 
 					//
-					res.send('create admin success');
+					res.redirect('/admin/orderlist');
 				});
 			});
+		});
+}
+
+exports.signupPage = function(req, res, next){
+	res.render('admin_signup');
+}
+
+/**
+ * Show all pending orders for admin
+ */
+exports.pendingOrders = function(req, res, next){
+	Order
+		.find({pending: true})
+		.populate('app')
+		.sort({createdAt: -1})
+		.exec(function(err, orders){
+			if (err) return next(err);
+
+			var pendingList = [];
+
+			for (var index in orders){
+				var order = orders[index].toObject();
+
+				order.orderId = alphaId.encode(order.orderId);
+				order.createdAt = moment(order.createdAt).format('l');
+
+				pendingList.push(order);
+			}
+
+			res.render('pendinglist', {user: req.session.user, orders: pendingList});
 		});
 }
 

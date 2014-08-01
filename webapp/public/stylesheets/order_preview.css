@@ -1,0 +1,67 @@
+.title {
+    margin: 42px 0px 60px 24px;
+    font-size: 30px;
+    color: #64697B;
+}
+
+i.order {
+    display: inline-block;
+    width: 44px;
+    height: 44px;
+    vertical-align: middle;
+    background-image: url('/images/order.png');
+    margin-right: 10px;
+}
+
+.order-info {
+	width: 500px;
+	margin: 60px 0px 0px 24px;
+	border-spacing: 30px;
+	table-layout: fixed;
+	height: 50px;
+    font-size: 16px;
+    color: #64697B;
+}
+
+.order-info td {
+	vertical-align: top;
+}
+
+.order-info td:first-child {
+	width: 30%;
+}
+
+.order-info td ul {
+	margin: 0;
+	padding: 0;
+}
+
+.order-form button {
+	margin: 0 auto;
+    width: 210px;
+    height: 60px;
+    line-height: 60px;
+    display: block;
+    font-size: 20px;
+    color: #FFFFFF;
+    background-color: #3A8BCD;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.headsup {
+    width: 960px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0 auto;
+    margin-top: 30px;
+    text-align: center;
+    background-color: #FFE6E6;
+    border: solid 1px #FDC6C6;
+    font-size: 16px;
+    color: #FC7171;
+}

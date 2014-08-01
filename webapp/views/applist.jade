@@ -1,61 +1,38 @@
 doctype html
 html
-  head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    title 
-      | 云引力 | 
-      = user.name
+	head
+		meta(charset='utf-8')
+		title 我的应用
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/applist.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.panel.container
+			h3.title
+				i.app
+				应用列表
+			a.new-btn(href="/app/new") 创建新应用
+			table.applist
+				tr
+					th 应用
+					th 应用名称
+					th 当前套餐
+					th 订单
+				tr.padding
+				each app in apps
+					//- tr.item(onclick='window.open("/app/' + app.name + '?tab=plan")')
+					tr.item(onclick='window.document.location="/app/' + app.name + '?tab=plan"')
+						td
+							img.tag(src="/images/app_tag.png")
+						td= app.name
+						td= app.planState
+						if app.order
+							td= '正在处理订单号: '+app.order.shortId
+						else if app.plan
+							td
+								a.buy(href='/order/preview/'+app.name) 续费
+						else
+							td
+								a.buy(href='/order/preview/'+app.name) 立刻包月  
 
-    link(href='/stylesheets/bootstrap.min.css', rel='stylesheet')
-    link(href='/stylesheets/nav.css', rel='stylesheet')
-    link(href='/stylesheets/applist.css', rel='stylesheet')
-  body
-    div.navbar.navbar-default.navbar-fixed-top(role='navigation')
-      div.navbar-header
-        a.navbar-brand(href='/') 云引力
-      ul.nav.navbar-nav
-        li
-          a(href='/docs') 文档
-      ul.nav.navbar-nav.navbar-right
-        li.dropdown.user-dropdown
-          a.dropdown-toggle(href='#', data-toggle='dropdown')
-            = user.name
-            b.caret
-          ul.dropdown-menu
-            li
-              a(href='/profile') 账户管理
-            li.divider
-            li
-              a(href='/signout') 登出
-
-    div.container
-      a.btn.btn-lg.btn-success.pull-right(href='/createapp') 创建应用
-
-    div.container.applist
-      h2.applist-header 应用：
-      div.list-group
-        if apps.length == 0
-          a.list-group-item.list-group-item-success(href='/createapp') 您还没有任何应用，立刻创建第一个应用
-        else
-          each app, i in apps
-            if i % 4 == 0
-              a.list-group-item.list-group-item-success(href='/app/'+app.name) 
-                = app.name
-            if i % 4 == 1
-              a.list-group-item.list-group-item-info(href='/app/'+app.name) 
-                = app.name
-            if i % 4 == 2
-              a.list-group-item.list-group-item-warning(href='/app/'+app.name) 
-                = app.name
-            if i % 4 == 3
-              a.list-group-item.list-group-item-danger(href='/app/'+app.name) 
-                = app.name
-
-    div.container.pricing-summary
-      h2 用户API使用量：
-        = cost
-
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
-    script(src='/javascripts/bootstrap.min.js')

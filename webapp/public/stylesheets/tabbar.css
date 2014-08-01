@@ -1,0 +1,63 @@
+.tabbar {
+	height: 84px;
+	margin: 0px 0px 0px 24px;
+	padding: 0;
+	list-style: none;
+}
+
+.tabbar li {
+	float: left;
+}
+
+.tabbar li a {
+	display: block;
+	overflow: hidden;
+	width: 84px;
+	height: 78px;
+	color: #7B7B7B;
+	background-color: #F5F5F5;
+	margin-right: 10px;
+	line-height: 110px;
+	text-align: center;
+	border-radius: 4px;
+}
+
+.tabbar li a.active {
+	background-color: #1B89D4;
+	color: #FFFFFF;
+}
+
+.tabbar li a i {
+	display: block;
+	width: 26px;
+	height: 26px;
+	margin-left: -13px;
+	margin-top: -25px;
+	position: relative;
+	left: 50%;
+	top: 50%;
+}
+
+i.plan {
+	background-image: url('/images/plan.png');
+}
+
+a.active i.plan {
+	background-image: url('/images/plan_selected.png');
+}
+
+i.auth {
+	background-image: url('/images/auth.png');
+}
+
+a.active i.auth {
+	background-image: url('/images/auth_selected.png');
+}
+
+i.setting {
+	background-image: url('/images/setting.png');
+}
+
+a.active i.setting {
+	background-image: url('/images/setting_selected.png');
+}

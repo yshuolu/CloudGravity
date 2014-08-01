@@ -1,0 +1,55 @@
+.title {
+    margin: 42px 0px 60px 24px;
+    font-size: 30px;
+    color: #64697B;
+}
+
+.newapp-form {
+	margin: 0 auto;
+	width: 50%;
+}
+
+.newapp-form input, .newapp-form textarea {
+	font-size: 16px;
+	width: 100%;
+	color: #64697B;
+	border-radius: 4px;
+	border: solid 1px #64697B;
+	text-indent: 1em;
+}
+
+.newapp-form input {
+	height: 50px;
+	margin-bottom: 20px;
+}
+
+.newapp-form textarea {
+	padding: 10px 0px;
+	line-height: 150%;
+}
+
+.newapp-form button {
+    margin: 0 auto;
+    width: 210px;
+    height: 60px;
+    line-height: 60px;
+    display: block;
+    font-size: 20px;
+    color: #FFFFFF;
+    background-color: #3A8BCD;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+i.app {
+    display: inline-block;
+    width: 45px;
+    height: 37px;
+    vertical-align: middle;
+    background-image: url('/images/app.png');
+    margin-right: 10px;
+}

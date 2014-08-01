@@ -1,0 +1,19 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 创建应用
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/newapp.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.container
+			h3.title
+				i.app
+				| 创建应用
+			form.newapp-form(action='/app/new', method='post')
+				input(type='text', name='name', placeholder='应用名', required, autofocus)
+				input(type='text', name='url', placeholder='URL')
+				textarea(name='description', rows='6', placeholder='应用描述')
+				button(type='submit') 创建

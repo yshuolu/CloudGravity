@@ -12,21 +12,34 @@ var mongoose = require('mongoose'),
  * Register a new user
  */
 
-exports.signup = function(req, res){
+exports.signup = function(req, res, next){
 	var newUser = new User(req.body);
 
 	newUser.save(function(err, user){
 		if (err){
-			console.log(err);
-			res.send('register failed\n');
-			return;
+			if (err.name === 'ValidationError'){
+				//validation error
+				req.session.error = '邮箱' + req.body.email + '已经存在，请使用新的email注册';
+				return res.redirect('/signup');
+
+			}else{
+				//internal error
+				return next(err);
+			}
 		}
 
 		//user register success
-		req.session.userId = user.id;
+		req.session.user = user.toObject();
 
 		res.redirect('/');
 	});
+}
+
+exports.signupPage = function(req, res){
+	if (req.session.user) return res.redirect('/');
+
+	res.render('signup', {error: req.session.error});
+	req.session.error = null;
 }
 
 /**
@@ -52,14 +65,27 @@ exports.signin = function(req, res){
 						req.session.cookie.maxAge = maxAge;
 					}
 
-					res.redirect('/');
+					if (req.session.user.isAdmin){
+						res.redirect('/admin');
+					}else{
+						//for normal user
+						res.redirect('/');
+					}
 				});
 				
 			}else{
 				//login failed
-				res.send('login failed\n');
+				req.session.error = '用户名密码错误';
+				res.redirect('/signin');
 			}
 		});
+}
+
+exports.signinPage = function(req, res){
+	if (req.session.user) return res.redirect('/');
+
+	res.render('signin', {error: req.session.error});
+	req.session.error = null;
 }
 
 /**
@@ -76,13 +102,13 @@ exports.signout = function(req, res){
  * Show login page if no user session, else redirect to /
  */
 
-exports.loginPage = function(req, res){
-	if (!req.user){
-		res.render('login');
-	}else{
-		res.redirect('/');
-	}
-}
+// exports.signinPage = function(req, res){
+// 	if (!req.user){
+// 		res.render('login');
+// 	}else{
+// 		res.redirect('/');
+// 	}
+// }
 
 
 /**

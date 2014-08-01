@@ -1,0 +1,48 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title= app.name + ' | 套餐'
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/tabbar.css', rel='stylesheet')
+		link(href='/stylesheets/app_plan.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.header.container
+			h3.title= app.name
+			include ./tabbar.jade
+		div.plan.container
+			p
+				i.plan-big
+				if current
+					= '当前套餐     ' + current.expire + '到期'
+				else
+					= '当前无套餐'
+			div.consumption
+				span.level VIP1
+				div.progress-bar
+					div.progress(style='width:' + ( current ? current.consumption : 0 ) / limit * 100 + '%;')
+				span.accurate= (current ? current.consumption : 0) + '/' + limit
+			a.buy(href='/order/preview/'+app.name) 立即充值
+		div.plan-history.container
+			p
+				i.history-big
+				套餐购买记录
+			table.plan-list
+				tr
+					th 套餐
+					th 状态
+					th API访问量
+					th 有效期
+				for plan in plans
+					tr
+						td VIP1
+						if plan.planState == 'NOW'
+							td.current 正在执行
+						else if plan.planState == 'FUTURE'
+							td 还未执行
+						else
+							td 过期
+						td= plan.consumption
+						td= plan.start + '-' + plan.expire 

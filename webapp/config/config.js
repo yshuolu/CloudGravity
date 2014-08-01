@@ -7,6 +7,7 @@ module.exports = {
 		port: 8888,
 		secret: 'this is a secret',
 		sessionMaxAge: 90000, //90s
-		billPlanInterval: 10 // 10 minutes
+		billPlanInterval: 10, // 10 minutes
+		planLimit: [10, 500]
 	}
 }

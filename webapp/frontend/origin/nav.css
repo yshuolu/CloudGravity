@@ -1,0 +1,85 @@
+/*navigation*/
+
+.navbar {
+	height: 70px;
+	background-color: #3A3F42;
+	margin: 0;
+	padding: 0;
+}
+
+.nav {
+	list-style: none;
+}
+
+.nav li {
+	float: left;
+}
+
+.nav li a {
+	overflow: hidden;
+	display: block;
+	height: 100%;
+	width: 100px;
+	line-height: 70px;
+	font-size: 16px;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.nav-header, .nav {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	float: left;
+}
+
+.nav-header {
+	overflow: hidden;
+	width: 133px;
+	height: 70px;
+	margin-left: 30px;
+}
+
+.nav-header img {
+	width: 100%;
+	height: 100%;
+}
+
+.main-nav {
+	margin-left: 100px;
+}
+
+.right-nav {
+	float: right;
+	margin-right: 30px;
+}
+
+.right-nav li a {
+	overflow: visible;
+}
+
+.dropdown {
+	width: 100px;
+	height: 112px;
+	padding: 0;
+	background-color: gray;
+	border-radius: 0px 0px 4px 4px;
+	display: none;
+	position: relative;
+	z-index: 100;
+	list-style: none;
+}
+
+.dropdown li {
+	height: 56px;
+	vertical-align: middle;
+}
+
+.dropdown li a {
+	height: 100%;
+	line-height: 56px;
+}
+
+.nav > li:hover > .dropdown {
+	display: block;
+}

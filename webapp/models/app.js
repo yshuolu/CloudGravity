@@ -118,6 +118,7 @@ AppSchema.statics = {
 		this
 			.find(criteria)
 			.populate('user')
+			.populate('plan')
 			.sort({'createdAt': -1})
 			.exec(fn);
 	} 

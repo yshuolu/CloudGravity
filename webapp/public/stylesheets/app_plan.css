@@ -1,0 +1,120 @@
+.title {
+	margin: 30px 0px 45px 24px;
+	color: #64697B;
+	font-size: 30px;
+}
+
+.plan {
+	margin-top: 45px;
+}
+
+.plan > p, .plan-history > p {
+	margin-left: 24px;
+	color: #64697B;
+	font-size: 18px;
+	margin-bottom: 55px;
+}
+
+.consumption {
+	margin-left: 50px;
+	color: #1B89D4;
+	font-size: 20px;
+}
+
+.level {
+	margin-right: 10px;
+}
+
+.progress-bar {
+	display: inline-block;
+	width: 720px;
+	height: 20px;
+	background-color: #E7E7E7;
+	border-radius: 4px;
+	overflow: hidden;
+	vertical-align: middle;
+}
+
+.progress {
+	height: 100%;
+	background-color: #1B89D4;
+}
+
+.accurate {
+	margin-left: 10px;
+}
+
+.buy {
+	display: block;
+	float: right;
+	width: 196px;
+	height: 48px;
+	line-height: 48px;
+	background-color: #81C35C;
+	border-radius: 4px;
+	color: #FFFFFF;
+	text-align: center;
+	margin: 60px 68px 60px 0px;
+
+}
+
+.plan-history {
+	clear: both;
+	margin-top: 60px;
+}
+
+.plan-list {
+	width: 840px;
+	margin: 0 auto;
+	margin-bottom: 30px;
+	text-align: center;
+	table-layout: fixed;
+	border-collapse: collapse;
+	border-spacing: 0;
+	color: #64697B;
+	font-size: 16px;
+}
+
+.plan-list th:first-child {
+	width: 10%;
+}
+
+.plan-list tr:first-child {
+	height: 45px;
+	background-color: #F5F5F5;
+	border-radius: 4px;
+}
+
+.plan-list tr:not(.padding) {
+	height: 50px;
+}
+
+.plan-list tr:not(.padding):not(:last-child):not(:first-child) {
+	border-bottom: 1px dotted #CACACA;
+}
+
+.padding {
+	height: 20px;
+}
+
+.current {
+	color: #1B89D4;
+}
+
+i.plan-big {
+	display: inline-block;
+	width: 44px;
+	height: 44px;
+	background-image: url('/images/plan_big.png');
+	vertical-align: middle;
+	margin-right: 15px;
+}
+
+i.history-big {
+	display: inline-block;
+	width: 44px;
+	height: 44px;
+	vertical-align: middle;
+	margin-right: 15px;
+	background-image: url('/images/order.png');
+}

@@ -1,0 +1,50 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 订单确认
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/order_preview.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.container
+			h3.title
+				i.order
+				订单确认
+			table.order-info
+				tr
+					td 应用名称：
+					td
+						strong= app.name
+				tr
+					td 数据接口：
+					td
+						ul
+							li 移动基站数据编号查询
+							li 移动基站数据经纬度查询
+				tr
+					td 购买时长：
+					td 一个月
+				tr
+					td 需支付：
+					td 150元
+				tr
+					td 支付宝账号：
+					td
+						ins 995967311
+				tr
+					td 支付方式：
+					td
+						| 请向支付宝
+						strong 995967311
+						| 转账
+						strong 150
+						| 元
+			p.headsup
+				| 请在转账备注里附上您的
+				strong 订单号
+				| ，转账收到之时我们会立刻开通您的包月服务
+			form.order-form(action='/order/new', method='post')
+				input(type='text', name='name', style='display:none;', value=app.name)
+				button(type='submit') 提交订单

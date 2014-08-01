@@ -1,0 +1,22 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title= app.name + ' | 鉴权'
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/tabbar.css', rel='stylesheet')
+		link(href='/stylesheets/app_auth.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.header.container
+			h3.title= app.name
+			include ./tabbar.jade
+		div.auth.container
+			h2.heading Access ID
+			p.content= app.accessId
+			h2.heading Access Key
+			p.content= app.accessKey
+		p.headsup
+			亲，请保护好Access Key不被泄露。Access Key是用于API请求的签名密钥。签名方法
+			a(href="#") 查看此文档

@@ -4,8 +4,14 @@
 
 var mongoose = require('mongoose'),
 	App = mongoose.model('App'),
-	ApiStat = mongoose.model('ApiStat');
+	ApiStat = mongoose.model('ApiStat'),
 	extend = require('util')._extend;
+	BillingPlan = mongoose.model('BillingPlan'),
+	Order = mongoose.model('Order'),
+	time = require('../utils/time'),
+	env = process.env.NODE_ENV || 'development',
+    config = require('../config/config')[env],
+    alphaId = require('../utils/alphaid');
 
 
 /**
@@ -22,7 +28,11 @@ exports.loadApp = function(){
 				next();
 			}else{
 				//error
-				next(err ? err : new Error('app not exits!'));
+				if (!err){
+					err = new Error('app not exits');
+					err.status = 404;
+				}
+				next(err);
 			}
 		});
 	}
@@ -54,42 +64,60 @@ exports.create = function(req, res){
  * show the land page
  */
 
-exports.list = function(req, res){
+exports.list = function(req, res, next){
 	if (req.session.user){
 		App.list({user: req.session.user._id}, function(err, apps){
 			//no app created, render the page directly
-			if (apps.length == 0) return res.render('applist', {user: req.session.user, apps: [], cost: 0});
+			//if (apps.length == 0) return res.render('applist', {user: req.session.user, apps: [], cost: 0});
 
 			//has app list
 			//count all api cost
-			var resid = apps.length;
+			var reside = apps.length;
 			var totalApiCount = 0;
 
-			for (app in apps){
-				//
-				ApiStat
-					.find({app: app._id})
-					.exec(function(err, stats){
-						if (err) return res.send('error');
+			//for each app, get current plan and pending order
+			apps.forEach(function(app){
 
-						//increment total api count
-						stats.forEach(function(stat){ totalApiCount += stat.count;});
+				// var app = apps[index];
 
-						//decrese resid
-						resid--;
+				BillingPlan.latestPlanForApp(app._id, function(err, plan){
+					if (err) return next(err);
 
-						//check end point
-						if (resid == 0){
-							res.render('applist', {user: req.session.user, apps: apps, cost: totalApiCount});
+					app.plan = plan;
+
+					Order.findOne({app: app._id, pending: true}, function(err, order){
+						if (err) return next(err);
+
+						//get app's pending order
+						app.order = order;
+						if (order){
+							app.order.shortId = alphaId.encode(order.orderId);
+						}
+
+						//set app's current plan state
+						if (!app.plan || app.plan.expire < new Date()){
+							app.planState = '无';
+						}else{
+							app.planState = '已购买至' + time.chinaMoment(app.plan.expire).format('MM月DD日');
+						}
+
+						//success, decrement reside
+						reside--;
+
+						//check if all done
+						if (reside === 0){
+							return res.render('applist', {user: req.session.user, apps: apps});
 						}
 					});
-			}
+
+				});
+			});
 
 		});
 
 	}else{
 		//user not logged in, show land page
-		res.render('land');
+		res.render('landing');
 	}
 }
 
@@ -97,10 +125,60 @@ exports.list = function(req, res){
  * Show an app with name
  */
 
-exports.show = function(req, res){
-	ApiStat.fetchStatOfApp(req.userApp._id, function(err, stats){
-		res.render('showapp', {user: req.session.user, app: req.userApp, stats: stats});
-	});
+exports.show = function(req, res, next){
+	if (req.query.tab === 'plan'){
+		//get all plans
+		BillingPlan.allPlansForApp(req.userApp._id, function(err, all, current){
+			if (err) return next(err);
+
+			//format current if needed
+			if (current) {
+				current = current.toObject();
+				current.expire = time.chinaMoment(current.expire).format('MM月DD日');
+			}
+
+			//format all plan history
+			var allPlans = [];
+
+			for (var index in all){
+				var plan = all[index].toObject();
+
+				//
+				if (plan.start > new Date()){
+					plan.planState = 'FUTURE';
+				}else if (plan.expire < new Date()){
+					plan.planState = 'EXPIRED';
+				}else{
+					plan.planState = 'NOW';
+				}
+
+				//format time
+				plan.start = time.chinaMoment(plan.start).format('YYYY/MM/DD');
+				plan.expire = time.chinaMoment(plan.expire).format('YYYY/MM/DD');
+
+				allPlans.push(plan);
+			}
+
+			var renderParams = {
+				user: req.session.user,
+				app: req.userApp,
+				current: current,
+				plans: allPlans,
+				limit: config.planLimit[1],
+				index: 1
+			};
+
+			res.render('app_plan', renderParams);
+		});
+	}else if (req.query.tab === 'auth'){
+		res.render('app_auth', {user: req.session.user, app: req.userApp, index: 2});
+	}else if (req.query.tab === 'setting'){
+		res.render('app_setting', {user: req.session.user, app: req.userApp, index: 3});
+	}else{
+		var err = new Error('404 not found');
+		err.status = 404;
+		return next(err);
+	}
 }
 
 /**
@@ -143,7 +221,7 @@ exports.delete = function(req, res){
  */
 
 exports.createPage = function(req, res){
-	res.render('createapp', {user: req.session.user});
+	res.render('newapp', {user: req.session.user});
 }
 
 

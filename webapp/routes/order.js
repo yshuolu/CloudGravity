@@ -20,12 +20,10 @@ exports.create = function(req, res, next){
 			pending: true
 		});
 
-		console.log(alphaId.encode(newOrder.orderId));
-
 		newOrder.save(function(err){
 			if (err) return next(err);
 
-			res.send('create order success');
+			res.redirect('/order/' + alphaId.encode(newOrder.orderId));
 		});
 	});
 }
@@ -37,13 +35,19 @@ exports.show = function(req, res, next){
 
 	Order
 		.findOne({orderId: orderId})
+		.populate('app')
 		.exec(function(err, order){
 			if (err) return next(err);
 
 			if (!order) return next('invalid shortId');
 
-			res.json(order);
+			order.shortId = alphaId.encode(order.orderId);
+			res.render('order', {user: req.session.user, order: order});
 		});
+}
+
+exports.preview = function(req, res, next){
+	res.render('order_preview', {user: req.session.user, app: req.userApp});
 }
 
 /**

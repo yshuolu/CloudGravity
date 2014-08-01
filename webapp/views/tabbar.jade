@@ -1,0 +1,28 @@
+ul.tabbar
+	li
+		if index == 1
+			a.active(href="/app/"+app.name+"?tab=plan")
+				i.plan
+				套餐
+		else
+			a(href="/app/"+app.name+"?tab=plan")
+				i.plan
+				套餐
+	li
+		if index == 2
+			a.active(href="/app/"+app.name+'?tab=auth')
+				i.auth
+				鉴权
+		else
+			a(href="/app/"+app.name+'?tab=auth')
+				i.auth
+				鉴权
+	li
+		if index == 3
+			a.active(href="/app/"+app.name+'?tab=setting')
+				i.setting
+				设置
+		else
+			a(href="/app/"+app.name+'?tab=setting')
+				i.setting
+				设置

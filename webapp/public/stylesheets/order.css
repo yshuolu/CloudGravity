@@ -1,0 +1,25 @@
+.title {
+    margin: 42px 0px 60px 24px;
+    font-size: 30px;
+    color: #64697B;
+}
+
+i.order {
+    display: inline-block;
+    width: 44px;
+    height: 44px;
+    vertical-align: middle;
+    background-image: url('/images/order.png');
+    margin-right: 10px;
+}
+
+.info {
+    margin-left: 60px;
+    font-size: 16px;
+    color: #64697B;
+}
+
+.info a {
+    text-decoration: underline;
+    color: #1AAAE6;
+}

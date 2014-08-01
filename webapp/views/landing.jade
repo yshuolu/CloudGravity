@@ -1,0 +1,90 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 云智汇
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/landing.css', rel='stylesheet')
+	body
+		div.header
+			div.container
+				div.navbar.container
+					a.navbar-header(href='/')
+						img(src='/images/logo.png')
+					ul.nav.main-nav
+						li
+							a(href='#') 数据接口
+						li
+							a(href='#') 计费
+						li
+							a(href='#') 文档
+						li
+							a(href='#') 常见问题
+					ul.nav.right-nav
+						li
+							a(href='/signin') 登录
+						li
+							a.round-btn(href='/signup') 注册
+
+				h1.title
+					| 2014全球定位数据一网打尽
+					| <br>
+					| 专为开发者设计
+
+				h4.subtitle
+					| 移动、联通、电信，2G、3G、4G准确定位
+
+				form.fast-register(action='/signup', method='post')
+					input(type='email', name='email', placeholder='邮箱', required)
+					input(type='password', name='pass', placeholder='密码', pattern='.{6,}', title='最少6位密码', required)
+					button(type='submit') 创建账号
+
+		div.shelf
+			div.container
+				table
+					tr
+						td
+							a(href='#')
+								img(src='/images/data1.png')
+								p 移动联通基站数据
+						td
+							a(href='#')
+								img(src='/images/data2.png')
+								p 电信基站数据
+						td
+							a(href='#')
+								img(src='/images/data3.png')
+								p 百度POI数据
+						td
+							a(href='#')
+								img(src='/images/data4.png')
+								p 谷歌POI数据
+								
+		div.promote
+			div.container
+				table
+					tr
+						td
+							img(src='/images/promote1.png')
+							h3 数据精确
+							p 数据准确可靠，有效避免过期数据干扰
+							a(href='#') 查看套餐计划
+						td
+							img(src='./images/promote2.png')
+							h3 实时更新
+							p 千万级数据同步更新，为您提供时效性最好的高价值数据
+							a(href='#') 查看数据接口
+						td
+							img(src='./images/promote3.png')
+							h3 稳定安全
+							p 提供请求签名验证功能，接口访问安全可靠
+							a(href='#') 查看API文档
+		
+		div.start
+			div.container
+				h2 一次包月，享用所用数据接口
+				h3 现在加入云智汇
+				a(href='/signup') 立即使用云智汇
+
+		div.footer
+			div.container

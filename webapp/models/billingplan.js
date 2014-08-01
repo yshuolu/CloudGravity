@@ -95,7 +95,7 @@ BillingPlanSchema.statics = {
 	 */
 	latestPlanForApp: function(appId, fn){
 		this
-			.findOne({app: appId, level: {'$ne': 0}}) //except level 0 plan
+			.findOne({app: appId})
 			.sort({expire: -1})
 			.exec(fn);
 	},
@@ -115,6 +115,34 @@ BillingPlanSchema.statics = {
 		this
 			.findOne({app: appId, start: {'$lte': date}, expire: {'$gt': date}}) //start <= timestamp < expire
 			.exec(fn);
+	},
+
+	/**
+	 * Fetch all plan of the app sorted by time and indicate current one if it exists
+	 *
+	 * @param {ObjectId} appId
+	 * @param {Function} fn; fn(err, all, current)
+	 *
+	 * @api public
+	 */
+	allPlansForApp: function(appId, fn){
+		this
+			.find({app: appId})
+			.sort({expire: -1})
+			.exec(function(err, docs){
+				var currentPlan = null;
+				var now = new Date();
+
+				for (var index in docs){
+					var doc = docs[index];
+
+					if (doc.start <= now && doc.expire > now){
+						currentPlan = doc;
+					}
+				}
+
+				fn(err, docs, currentPlan);
+			});
 	}
 }
 

@@ -1,0 +1,39 @@
+.pendinglist {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 60px;
+}
+
+.pendinglist tr:not(:first-child):not(:last-child):not(.padding) {
+        border-bottom: 1px dotted #CACACA;
+}
+
+.pendinglist .item {
+        cursor: pointer;
+        height: 50px;
+        font-size: 16px;
+        color: #64697B;
+}
+
+.pendinglist tr:first-child {
+        background-color: #F5F5F5;
+        font-size: 20px;
+        color: #64697B;
+        height: 50px;
+}
+
+.pendinglist .padding {
+        height: 20px;
+}
+
+.approve-form button {
+        color: #FFFFFF;
+        background-color: #81C45D;
+        border: none;
+        width: 50px;
+        height: 20px;
+        border-radius: 4px;
+        cursor: pointer;
+}

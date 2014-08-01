@@ -44,14 +44,14 @@ UserSchema
  */
 
 //name length should be at least 6 characters
-UserSchema.path('name').validate(function(name){
-	return ( name.length >= 1 );
-}, 'name length less than 1');
+// UserSchema.path('name').validate(function(name){
+// 	return ( name.length >= 1 );
+// }, 'name length less than 1');
 
 //email should not be empty
 UserSchema.path('email').validate(function(email){
 	return email.length;
-}, 'email empty');
+}, 'no email');
 
 //email should be unique
 UserSchema.path('email').validate(function(email, fn){
@@ -64,7 +64,7 @@ UserSchema.path('email').validate(function(email, fn){
 		//if it is a email in store, no need to check
 		fn(true)
 	}
-}, 'email already exits');
+}, 'email exists');
 
 //salt should not be empty
 UserSchema.path('salt').validate(function(salt){
