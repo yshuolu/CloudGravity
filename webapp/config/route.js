@@ -12,8 +12,8 @@ var auth = require('../middlewares/auth');
 var user = require('../routes/user'),
 	appController = require('../routes/app');
 	admin = require('../routes/admin'),
-	order = require('../routes/order');
-//var land = require('../routes/land');
+	order = require('../routes/order'),
+	api = require('../routes/api');
 
 module.exports = function(app){
 	app.get('/', appController.list);
@@ -46,4 +46,9 @@ module.exports = function(app){
 	app.post('/admin/approve', auth.adminRequired(), admin.loadOrder(), admin.newBillingPlan);
 	app.get('/admin/orderlist', auth.adminRequired(), admin.pendingOrders);
 	app.get('/admin', auth.adminRequired(), admin.pendingOrders);
+
+	//API
+	app.get('/api', api.list);
+	app.get('/api/cell', api.cell);
+	app.get('/api/cellnearby', api.cellnearby);
 }

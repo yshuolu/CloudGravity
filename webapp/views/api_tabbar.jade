@@ -1,0 +1,28 @@
+ul.tabbar
+	li
+		if index == 1
+			a.active(href="/api/"+apiName+"?tab=info")
+				i.plan
+				| 接口服务
+		else
+			a(href="/api/"+apiName+"?tab=info")
+				i.plan
+				| 接口服务
+	li
+		if index == 2
+			a.active(href="/api/"+apiName+'?tab=trial')
+				i.auth
+				| 免费查询
+		else
+			a(href="/api/"+apiName+'?tab=trial')
+				i.auth
+				| 免费查询
+	li
+		if index == 3
+			a.active(href="/api/"+apiName+'?tab=offline')
+				i.setting
+				| 离线数据包
+		else
+			a(href="/api/"+apiName+'?tab=offline')
+				i.setting
+				| 离线数据包

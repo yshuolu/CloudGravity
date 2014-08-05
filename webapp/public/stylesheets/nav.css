@@ -26,6 +26,9 @@
 	color: #FFFFFF;
 }
 
+.nav li a.active {
+}
+
 .nav-header, .nav {
 	display: inline-block;
 	margin: 0;
@@ -60,12 +63,13 @@
 
 .dropdown {
 	width: 100px;
-	height: 112px;
-	padding: 0;
-	background-color: gray;
+	height: 132px;
+	padding: 20px 0px 0px 0px;
+	/*background-color: #F5F5F5;*/
+	/*border: solid 1px #E5E5E5;*/
 	border-radius: 0px 0px 4px 4px;
 	display: none;
-	position: relative;
+	position: absolute;
 	z-index: 100;
 	list-style: none;
 }
@@ -73,13 +77,55 @@
 .dropdown li {
 	height: 56px;
 	vertical-align: middle;
+	padding: 0;
+}
+
+.dropdown li a {
+	border: solid 1px #E5E5E5;
+	background-color: #F5F5F5;
+}
+
+.dropdown li:first-child a {
+	border-bottom: none;
+}
+
+.dropdown li:last-child a {
+	border-top: none;
 }
 
 .dropdown li a {
 	height: 100%;
 	line-height: 56px;
+	color: #62697C;
+}
+
+.dropdown li.separate {
+	margin-left: 20px;
+	padding: 0;
+	width: 60px;
+	display: block;
+	height: 1px;
+	background-color: #E5E5E5;
 }
 
 .nav > li:hover > .dropdown {
 	display: block;
+}
+
+i.setting-small {
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	vertical-align: middle;
+	margin-right: 10px;
+	background-image: url('/images/setting-small.png');
+}
+
+i.out {
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	vertical-align: middle;
+	margin-right: 10px;
+	background-image: url('/images/out.png');
 }

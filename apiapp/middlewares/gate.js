@@ -99,7 +99,7 @@ exports.bill = function(){
 		//to fix bug, sometimes plan is just the object id
 		//cause crash
 		//to modify
-		if ( !('isExpired' in plan) ) return next();
+		if ( plan && !('isExpired' in plan) ) return next();
 
 		if (!plan || plan.isExpired(req.query.timestamp)){
 			//no plan or current plan is expired, need to find a up to date plan
@@ -200,6 +200,15 @@ exports.countTrial = function(){
 			}
 		});
 	};
+}
+
+//CORS
+exports.allowCrossDomain = function(){
+	return function(req, res, next){
+		res.header('Access-Control-Allow-Origin', config.allowedDomains);
+		res.header('Access-Control-Allow-Headers', config.allowedHeaders);
+		return next();
+	}
 }
  
 

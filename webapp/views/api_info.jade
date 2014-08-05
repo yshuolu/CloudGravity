@@ -1,0 +1,51 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 接口服务
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/api_tabbar.css', rel='stylesheet')
+		link(href='/stylesheets/api_info.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.header.container
+			h3.breadcrumb= '数据接口 > ' + info.title
+			include ./api_tabbar.jade
+			a.buy(href='/') 立即购买
+		div.basic.container
+			h3= info.title
+			p= '接口描述：' + info.description
+			p= '接口地址：' + info.address
+			p= '支持格式：JSON'
+			p= '请求方法：GET'
+			p= '请求示例：' + info.example
+		div.params.container
+			h3 参数
+			table
+				tr
+					th 参数名
+					th 类型
+					th 说明
+				for array in info.params
+					tr
+						td= array[0]
+						td= array[1]
+						td= array[2]
+				tr
+					td access_id
+					td string
+					td 应用所分配的access id
+				tr
+					td timestamp
+					td string
+					td Unix时间戳
+				tr
+					td signature
+					td string
+					td 
+						| 请求签名，用于保护请求，具体签名方法
+						a(href='#') 查看此文档
+		div.return.container
+			h3 JSON返回示例
+			pre= info.return

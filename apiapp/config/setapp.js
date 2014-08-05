@@ -13,6 +13,8 @@ module.exports = function(app, config){
 
 	app.use(express.logger('dev'));
 
+	app.use(gate.allowCrossDomain());
+
 	//middleware for auth request, only apply to normal request, i.e., request path without prefix '/trial'
 	app.useExceptPrefix('/trial', gate.appAuth());
 	//middleware for bill app, only apply to normal request

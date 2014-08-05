@@ -179,7 +179,7 @@ exports.newBillingPlan = function(req, res, next){
 			req.order.save(function(err){
 				if (err) return next(err);
 
-				return res.send('create new plan success');
+				return res.redirect('/admin');
 			});
 			
 		});

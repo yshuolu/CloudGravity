@@ -1,0 +1,25 @@
+.title {
+	margin: 30px 0px 45px 24px;
+	color: #64697B;
+	font-size: 30px;
+}
+
+.info table {
+	margin: 50px 24px 0px 24px;
+	font-size: 16px;
+	color: #64697B;
+	border-spacing: 0px 35px;
+}
+
+.info table td {
+	vertical-align: top;
+}
+
+.info table a {
+	text-decoration: underline;
+	color: #1AAAE6;
+}
+
+.info table td:last-child {
+	width: 90%;
+}

@@ -1,0 +1,29 @@
+.shelf table {
+        margin-top: 110px;
+        border-spacing: 50px;
+        width: 100%;
+        margin: 0 auto;
+}
+
+.shelf table td {
+        width: 250px;
+        text-align: center;
+}
+
+.shelf table td a {
+        font-size: 22px;
+        color: #222222;
+}
+
+.shelf table td img {
+        width: 160px;
+        height: 160px;
+}
+
+.shelf table td p {
+        margin-top: 42px;
+}
+
+.warn {
+        color: red;
+}

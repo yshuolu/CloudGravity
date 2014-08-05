@@ -4,11 +4,11 @@ div.navbar
 			img(src="/images/logo.png")
 		ul.nav.main-nav
 			li
-				a(href="#") 数据接口
+				a(href="/api", class=index===0?'active':'') 数据接口
 			li
-				a(href="#") 计费
+				a(href="#", class=index===1?'active':'') 计费
 			li
-				a(href="#") 文档
+				a(href="#", class=index===2?'active':'') 文档
 			li
 				a(href="#") 常见问题
 		ul.nav.right-nav
@@ -17,8 +17,14 @@ div.navbar
 					a(href="#")= user.email
 					ul.dropdown
 						li
-							a(href="#") 设置
-							a(href="/signout") 退出
+							a(href="#")
+								i.setting-small
+								| 设置
+						li.separate
+						li
+							a(href="/signout")
+								i.out
+								| 退出
 				else
 					a(href="/signin") 登录
 

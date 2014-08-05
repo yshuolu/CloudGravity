@@ -18,7 +18,7 @@ module.exports = function(app, config){
 	app.use(express.cookieParser());
 	app.use(express.session({secret: "This is a secret"}));
 	app.use(express.bodyParser());
-	//app.use(express.favicon());
+	//app.use(express.favicon('/images/app.png'));
 	app.use(express.static(path.join(rootDir, 'public')));
 
 	//app.use(auth.sessionAuth());

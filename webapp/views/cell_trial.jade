@@ -1,0 +1,45 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 试用
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/api_tabbar.css', rel='stylesheet')
+		link(href='/stylesheets/cell_trial.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.header.container
+			h3.breadcrumb= '数据接口 > ' + info.title
+			include ./api_tabbar.jade
+			a.buy('/') 立即购买
+		div.trial.container
+			h3 查询参数
+			form.trial-form
+				| LAC: 
+				input(type='text', name='lac')
+				| CELL:
+				input(type='text', name='cell')
+				input(type='checkbox', name='hex', value='true')
+				input(type='text', name='User-Email', style='display:none;', value=user.email) 
+				input(type='text', name='User-Trial-Key', style='display:none', value=user.trialKey)
+				| 16进制
+				button(type='button', onclick='request();') 查询
+			h3 
+				| 返回结果
+				span.warn （试用返回字段不完整，其余字段付费后可见）：
+			pre.return
+		script.
+			function request(){
+				var xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if (xhr.readyState === 4 && xhr.status === 200){
+						document.querySelector('.return').textContent = xhr.responseText;
+					}
+				}
+				xhr.open('GET', 'http://api.yun.com/trial/cell?lac=' + document.getElementsByName('lac')[0].value + '&cell=' + document.getElementsByName('cell')[0].value + '&hex=' + document.getElementsByName('hex')[0].value);
+				xhr.setRequestHeader('User-Email', document.getElementsByName('User-Email')[0].value);
+				xhr.setRequestHeader('User-Trial-Key', document.getElementsByName('User-Trial-Key')[0].value);
+				xhr.send();
+			}
+			

@@ -1,0 +1,62 @@
+.header {
+	position: relative;
+	padding-top: 0.1px;
+}
+
+.breadcrumb {
+	margin: 30px 0px 45px 24px;
+	font-size: 16px;
+	color: #64697B;
+}
+
+h3 {
+	margin: 56px 0px 0px 24px;
+	font-size: 	18px;
+	color: #1AAAE6;
+}
+
+.buy {
+	display: block;
+	position: absolute;
+	float: right;
+	width: 210px;
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	border-radius: 4px;
+	top: 50px;
+	right: 24px;
+	color: #FFFFFF;
+	background-color: #1B89D4;
+	font-size: 20px;
+}
+
+.trial-form {
+	margin: 16px 0px 0px 24px;
+	font-size: 16px;
+	color: #64697B;
+}
+
+.trial-form input[type=text] {
+	margin: 0px 20px;
+}
+
+.trial-form button {
+	margin-left: 20px;
+	background-color: #1B89D4;
+	padding: 5px 40px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	color: #FFFFFF;
+	font-size: 16px;
+}
+
+.return {
+	margin: 20px 0px 50px 50px;
+}
+
+.warn {
+	font-size: 14px;
+	color: red;
+}

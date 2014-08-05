@@ -1,0 +1,52 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title= app.name + ' | 设置'
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/tabbar.css', rel='stylesheet')
+		link(href='/stylesheets/app_setting.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.header.container
+			h3.title= app.name
+			include ./tabbar.jade
+		div.info.container
+			table
+				tr
+					td 应用名：
+					td= app.name
+				tr
+					td URL：
+					td
+						if app.url
+							a(href=app.url) app.url
+						else
+							| 无
+				tr
+					td 应用描述：
+					td= app.description ? app.description : '无'
+			form.delete-form(action='/app/'+app.name, method='post')
+				//- input(type='checkbox', name='del', value=true, style='display:none;', checked)
+				button(type='button', onclick='deleteApp();') 删除应用
+		script.
+
+			function deleteApp(){
+				var r = confirm('确定删除应用？');
+				if (r === true){
+					var xhr = new XMLHttpRequest();
+					xhr.onreadystatechange = function(){
+						if (xhr.readyState === 4){
+							if (xhr.status === 200){
+								document.location = '/';
+							}else{
+								alert('删除失败');
+							}
+						}
+					}
+					xhr.open('POST', '/app/' + document.querySelector('.title').textContent);
+					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+					xhr.send('del=true');
+				}
+			}

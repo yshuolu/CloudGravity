@@ -4,6 +4,11 @@
     color: #64697B;
 }
 
+.create-area {
+    position: relative;
+    padding-top: 0.1px;
+}
+
 .newapp-form {
 	margin: 0 auto;
 	width: 50%;
@@ -52,4 +57,12 @@ i.app {
     vertical-align: middle;
     background-image: url('/images/app.png');
     margin-right: 10px;
+}
+
+.error {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    color: #D9534F;
+    text-align: center;
 }

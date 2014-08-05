@@ -30,7 +30,7 @@ exports.sessionAuth = function(){
 exports.userRequired = function(){
 	function _userRequired(req, res, next){
 		if (!req.session.user){
-			next(new Error('user not login!'));
+			res.redirect('/signin');
 		}else{
 			next();
 		}

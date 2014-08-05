@@ -1,0 +1,46 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 数据接口
+		link(href='/stylesheets/base.css', rel='stylesheet')
+		link(href='/stylesheets/nav.css', rel='stylesheet')
+		link(href='/stylesheets/apilist.css', rel='stylesheet')
+	body
+		include ./nav.jade
+		div.shelf
+			div.container
+				table
+					tr
+						td
+							a(href='/api/cell?tab=info')
+								img(src='/images/data1.png')
+								p 
+								| 移动基站数据
+								strong 编号查询
+						td
+							a(href='/api/cellnearby?tab=info')
+								img(src='/images/data1.png')
+								p
+								| 移动基站数据
+								strong 经纬度查询
+					tr
+						td
+							a
+								img(src='/images/data2.png')
+								p
+								| 电信基站数据
+								span.warn （即将开通）
+						td
+							a
+								img(src='/images/data3.png')
+								p 
+								| 百度POI数据
+								span.warn （即将开通）
+					tr
+						td
+							a
+								img(src='/images/data4.png')
+								p
+								| 谷歌POI数据
+								span.warn （即将开通）	

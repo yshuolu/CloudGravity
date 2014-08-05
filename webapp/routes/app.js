@@ -51,8 +51,12 @@ exports.create = function(req, res){
 
 	newApp.save(function(err, app){
 		if (err){
-			//save err
-			return res.send('create app failed!\n');
+			if (err.name === 'ValidationError'){
+				req.session.error = '该应用名已存在，请更换新的名称';
+				return res.redirect('/app/new');
+			}else{
+				return next(err);
+			}
 		}
 
 		res.redirect('/');
@@ -67,18 +71,18 @@ exports.create = function(req, res){
 exports.list = function(req, res, next){
 	if (req.session.user){
 		App.list({user: req.session.user._id}, function(err, apps){
-			//no app created, render the page directly
-			//if (apps.length == 0) return res.render('applist', {user: req.session.user, apps: [], cost: 0});
 
-			//has app list
-			//count all api cost
+			if (apps.length === 0){
+				return res.render('applist', {user: req.session.user, apps: []});
+			}
+
 			var reside = apps.length;
-			var totalApiCount = 0;
+			var plainApps = [];
 
 			//for each app, get current plan and pending order
 			apps.forEach(function(app){
 
-				// var app = apps[index];
+				app = app.toObject();
 
 				BillingPlan.latestPlanForApp(app._id, function(err, plan){
 					if (err) return next(err);
@@ -101,12 +105,15 @@ exports.list = function(req, res, next){
 							app.planState = '已购买至' + time.chinaMoment(app.plan.expire).format('MM月DD日');
 						}
 
+						//
+						plainApps.push(app);
+
 						//success, decrement reside
 						reside--;
 
 						//check if all done
 						if (reside === 0){
-							return res.render('applist', {user: req.session.user, apps: apps});
+							return res.render('applist', {user: req.session.user, apps: plainApps});
 						}
 					});
 
@@ -221,7 +228,8 @@ exports.delete = function(req, res){
  */
 
 exports.createPage = function(req, res){
-	res.render('newapp', {user: req.session.user});
+	res.render('newapp', {user: req.session.user, error: req.session.error});
+	req.session.error = null;
 }
 
 

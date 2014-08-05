@@ -9,6 +9,8 @@ module.exports = {
 		timestampExpire: 15, //minutes to reject request as replay attack
 		planLimit: [10, 500],
 		trialLimit: 10,
-		trialInterval: 1 // trial interval in minutes
+		trialInterval: 1, // trial interval in minutes
+		allowedDomains: ['http://yun.com'],
+		allowedHeaders: ['User-Email', 'User-Trial-Key']
 	}
 }
