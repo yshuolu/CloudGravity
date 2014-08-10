@@ -11,7 +11,7 @@ var mongoose = require('mongoose'),
 	alphaId = require('../utils/alphaid'),
 	env = process.env.NODE_ENV || 'development',
     config = require('../config/config')[env],
-    moment = require('moment');
+    moment = require('moment-timezone');
 
 /**
  * Middleware to load app from access id
