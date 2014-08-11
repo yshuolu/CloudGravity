@@ -16,11 +16,13 @@ html
 		div.trial.container
 			h3 查询参数
 			form.trial-form
+				| MNC:
+				input(type='text', name='mnc')
 				| LAC: 
 				input(type='text', name='lac')
 				| CELL:
 				input(type='text', name='cell')
-				input(type='checkbox', name='hex', value='true')
+				input(type='checkbox', name='hex')
 				input(type='text', name='User-Email', style='display:none;', value=user.email) 
 				input(type='text', name='User-Trial-Key', style='display:none', value=user.trialKey)
 				| 16进制
@@ -37,7 +39,7 @@ html
 						document.querySelector('.return').textContent = xhr.responseText;
 					}
 				}
-				xhr.open('GET', 'http://api.yun.com/trial/cell?lac=' + document.getElementsByName('lac')[0].value + '&cell=' + document.getElementsByName('cell')[0].value + '&hex=' + document.getElementsByName('hex')[0].value);
+				xhr.open('GET', 'http://api.yun.com/trial/cell?lac=' + document.getElementsByName('lac')[0].value + '&cell=' + document.getElementsByName('cell')[0].value + (document.getElementsByName('hex')[0].checked?'&hex=true':'')+ '&mnc=' + document.getElementsByName('mnc')[0].value);
 				xhr.setRequestHeader('User-Email', document.getElementsByName('User-Email')[0].value);
 				xhr.setRequestHeader('User-Trial-Key', document.getElementsByName('User-Trial-Key')[0].value);
 				xhr.send();

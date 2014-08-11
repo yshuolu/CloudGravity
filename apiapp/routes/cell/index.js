@@ -44,6 +44,8 @@ function search(req, res, next){
 	 * Do sanitize and validation here!
 	 */
 
+	req.query.mnc = parseInt(req.query.mnc);
+
 	if (!req.query.hex) {
 		//sanitize, all params should be number
 		req.query.lac = parseInt(req.query.lac);
@@ -57,7 +59,7 @@ function search(req, res, next){
 	}
 
 	//check if params are number
-	if ( isNaN(req.query.lac) || isNaN(req.query.cell) ) {
+	if ( isNaN(req.query.mnc) || isNaN(req.query.lac) || isNaN(req.query.cell) ) {
 		//param error
 		return next(newError('INVALID_PARAM'));
 	}
@@ -73,7 +75,7 @@ function search(req, res, next){
 
 		}else{
 			//did not hit the cache, query database now
-			Cell.findByLacAndCell(req.query.lac, req.query.cell, function(err, cells){
+			Cell.findByLacAndCell(req.query.mnc, req.query.lac, req.query.cell, function(err, cells){
 				if (err) return res.send('internal error');
 
 				if (cells.length == 0) return next(newError('NO_RESULT'));
@@ -86,6 +88,8 @@ function search(req, res, next){
 					var plainObject = doc.toObject();
 					delete plainObject.loc;
 					delete plainObject._id;
+					delete plainObject.source;
+					delete plainObject.isAdjusted;
 
 					res.outputObj.push(plainObject);
 				});
@@ -157,6 +161,7 @@ function searchNearest(req, res, next){
 				cells.results.forEach(function(item){
 					delete item.obj.loc;
 					delete item.obj._id;
+					delete item.obj.source;
 
 					res.outputObj.push(item.obj);
 				});
@@ -180,7 +185,7 @@ function trim(req, res){
 	trimmedResult = [];
 
 	res.outputObj.forEach(function(cell){
-		trimmedResult.push(util.subfields(cell, ['LNG', 'LAT', 'ADDRESS']));
+		trimmedResult.push(util.subfields(cell, ['lng', 'lat', 'address']));
 	});
 
 	res.json(trimmedResult);
@@ -194,7 +199,7 @@ function trim(req, res){
  */
 
 function cacheKeyForCell(req){
-	var key = req.path + ' ' + JSON.stringify({lac: req.query.lac, cell: req.query.cell});
+	var key = req.path + ' ' + JSON.stringify({mnc: req.query.mnc, lac: req.query.lac, cell: req.query.cell});
 
 	return encodeURIComponent(key);
 }

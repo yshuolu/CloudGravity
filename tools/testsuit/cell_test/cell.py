@@ -8,8 +8,8 @@ access_id = 'b1f81a5fd9bd4d5e541e82db63b333c7'
 
 access_key = '556fa2124dcd6a083c05489b1e59cc3c'
 
-def cell(lac, cell):
-
+def cell(mnc, lac, cell):
+	mnc = str(mnc)
 	lac = str(lac)
 	cell = str(cell)
 
@@ -19,6 +19,7 @@ def cell(lac, cell):
 	#collect all params: lac cell timestamp access_id
 	paramTupleList = []
 
+	paramTupleList.append(('mnc', mnc));
 	paramTupleList.append(('lac', lac))
 	paramTupleList.append(('cell', cell))
 	paramTupleList.append(('access_id', access_id))

@@ -13,7 +13,7 @@ def main():
 
 #send request
 def request():
-	cell.cell(1, 1)
+	cell.cell(0, 1, 1)
 
 if __name__ == '__main__':
 	main()
