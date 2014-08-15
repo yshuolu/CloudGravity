@@ -22,7 +22,7 @@ var env = process.env.NODE_ENV || 'development',
  */
 
 var connect = function(){
-	var options = { server: { socketOptions: { keepAlive: 1 } } };
+	var options = { server: { socketOptions: { keepAlive: 1 } }, user: 'app', pass: 'wenhui' };
 	mongoose.connect(config.db, options);
 };
 

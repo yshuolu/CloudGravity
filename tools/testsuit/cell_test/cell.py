@@ -39,4 +39,6 @@ def cell(mnc, lac, cell):
 
 	print requestURL
 
-	print urllib2.urlopen(requestURL).read()
+	result = urllib2.urlopen(requestURL).read()
+
+	return result
